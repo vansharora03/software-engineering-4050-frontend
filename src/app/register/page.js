@@ -6,7 +6,7 @@ export default function Register() {
         <>
         <NavBar></NavBar>
         <div className="h-screen flex flex-col justify-center items-center">
-        <p className="text-5xl font-bold mb-14">Sign up</p> {/* Adjust the mb-6 value as needed */}
+        <p className="text-5xl font-bold mb-14">Sign up</p>
         <InputField label="First Name" placeholder="Enter your first name" />
         <InputField label="Last Name" placeholder="Enter your last name" />
         <InputField label="Email" placeholder="Enter your email" />
