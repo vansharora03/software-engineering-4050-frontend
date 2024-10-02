@@ -4,7 +4,6 @@ import InputField from "@/components/InputField";
 export default function Login() {
     return (
     <>
-        <NavBar></NavBar>
         <div className="h-screen flex flex-col justify-center items-center">
         <p className="text-5xl font-bold mb-14">Login</p>
             <InputField label="Email" placeholder="Enter Email"></InputField>

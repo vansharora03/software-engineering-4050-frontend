@@ -4,7 +4,6 @@ import NavBar from "@/components/NavBar";
 export default function Register() {
     return (
         <>
-        <NavBar></NavBar>
         <div className="h-screen flex flex-col justify-center items-center">
         <p className="text-5xl font-bold mb-14">Sign up</p>
         <InputField label="First Name" placeholder="Enter your first name" />
