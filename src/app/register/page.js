@@ -1,8 +1,11 @@
 import InputField from "@/components/InputField";
+import NavBar from "@/components/NavBar";
 
 export default function Register() {
     return (
-      <div className="h-screen flex flex-col justify-center items-center">
+        <>
+        <NavBar></NavBar>
+        <div className="h-screen flex flex-col justify-center items-center">
         <p className="text-5xl font-bold mb-14">Sign up</p> {/* Adjust the mb-6 value as needed */}
         <InputField label="First Name" placeholder="Enter your first name" />
         <InputField label="Last Name" placeholder="Enter your last name" />
@@ -20,5 +23,6 @@ export default function Register() {
           </a>
         </p>
       </div>
+        </>
     );
 }
