@@ -25,3 +25,44 @@ body {
     text-wrap: balance;
   }
 }
+
+.navbar {
+  display: flex;
+  flex-direction: column;
+  justify-content: right;
+  gap: 5px;
+}
+
+.buttonRow {
+  display: flex;
+  flex-direction: row;
+  justify-content: end;
+  gap: 1rem;
+  padding: 0.5rem;
+  background-color: #A39594;
+  height: 100px;
+  align-items: center;
+}
+
+.navbutton {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  height: 50px;
+  width: 125px;
+  padding: 3px;
+  background: #E3AA3C;
+  color: black;
+  border-radius: 15px;
+  cursor: pointer;
+}
+
+.searchField {
+  padding: 5px;
+  width: 30em;
+  align-self: flex-end;
+  border-radius: 5px;
+  display: none;
+  color: black
+}
