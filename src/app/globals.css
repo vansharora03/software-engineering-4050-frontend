@@ -3,21 +3,21 @@
 @tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #f0f4f8;
+  --foreground: #1f2937;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: #0d1117;
+    --foreground: #c9d1d9;
   }
 }
 
 body {
   color: var(--foreground);
   background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: 'Helvetica Neue', Arial, sans-serif;
 }
 
 @layer utilities {
@@ -29,17 +29,18 @@ body {
 .navbar {
   display: flex;
   flex-direction: column;
-  justify-content: right;
+  justify-content: flex-end;
   gap: 5px;
+  margin-bottom: 15px;
 }
 
 .buttonRow {
   display: flex;
   flex-direction: row;
-  justify-content: end;
+  justify-content: flex-end;
   gap: 1rem;
   padding: 0.5rem;
-  background-color: #A39594;
+  background-color: #3b3f42;
   height: 100px;
   align-items: center;
 }
@@ -51,18 +52,58 @@ body {
   text-align: center;
   height: 50px;
   width: 125px;
-  padding: 3px;
-  background: #E3AA3C;
-  color: black;
-  border-radius: 15px;
+  padding: 10px;
+  background: #4c7c92;
+  color: #ffffff;
+  border-radius: 25px;
   cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.navbutton:hover {
+  background: #36757d;
 }
 
 .searchField {
-  padding: 5px;
+  padding: 10px;
   width: 30em;
   align-self: flex-end;
   border-radius: 5px;
+  border: 1px solid #d1d5db;
   display: none;
-  color: black
+  color: #1f2937;
+}
+
+.movieCard {
+  background: #ffffff;
+  width: 400px;
+  height: 300px;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  gap: 15px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+}
+
+.movieCardTitle {
+  color: #333;
+  font-weight: bold;
+}
+
+.movieCardTrailer {
+  align-self: center;
+}
+
+.movieCardBookButton {
+  width: 150px;
+  height: 150px;
+  background: #4c7c92;
+  color: #ffffff;
+  border-radius: 25px;
+  transition: background-color 0.3s;
+}
+
+.movieCardBookButton:hover {
+  background: #36757d;
 }
