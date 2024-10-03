@@ -1,13 +1,17 @@
 import MovieCard from "@/components/MovieCard";
-
-const movie1 = {
-    id: 1,
-    title: "Dhoom 2",
-    trailer: "https://www.youtube.com/embed/oRIIeyIa6nE?si=2x9VP1D0Hn5UE-33"
-}
-
+import { movies } from "@/lib/movieData";
+import Link from 'next/link';
 export default function Movies() {
     return (
-        <MovieCard movie={movie1}></MovieCard>
+        <div>
+            {movies.map((movie) => (
+                <div key={movie.id}>
+                    <Link href={`/movies/${movie.id}`}/>
+                    <a>
+                        <MovieCard movie={movie} ></MovieCard>
+                    </a>
+                </div>
+            ))}
+        </div>
     )
 }
