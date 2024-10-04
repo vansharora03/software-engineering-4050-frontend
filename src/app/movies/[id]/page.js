@@ -1,11 +1,123 @@
-import MovieCard from "@/components/MovieCard"
-import { useRouter } from "next/router"
+'use client';
+import { useParams, useRouter } from 'next/navigation'; // For dynamic route params
+import MovieCard from "@/components/MovieCard";
+import { movies } from "@/lib/movieData";
+import { useState } from 'react';
+import { format, addDays } from 'date-fns'; // For date formatting
+
 export default function MovieInfo() {
     const router = useRouter();
-    const {id} = router.query;
-    return (
-        <div>
+    const params = useParams(); // Get the dynamic route param
+    const id = params.id; // Extract the `id` from the URL
+    const movie = movies.find((movie) => movie.id === parseInt(id)); // Find the movie by `id`
+    
+    // State to store the selected date and time
+    const [selectedDate, setSelectedDate] = useState('');
+    const [selectedTime, setSelectedTime] = useState('');
 
+    // Calculate available dates (current week starting from today)
+    // Array.from automatically increments the 'index' up to length:7
+    const availableDates = Array.from({ length: 7 }, (_, index) => {
+        const date = addDays(new Date(), index);
+        return format(date, 'EEE MMM d'); // Format: "Thu Oct 10"
+    });
+
+    // Available showtimes
+    const availableTimes = ['12:00 PM', '3:00 PM', '6:00 PM', '9:00 PM'];
+
+    // Handle case when movie is not found
+    if (!movie) {
+        return <div>Movie not found</div>;
+    }
+
+    const toggleDate = (date) => {
+        setSelectedDate(selectedDate === date ? '' : date);
+        if (selectedDate === date) {
+            setSelectedTime(''); // Reset selected time when date is unselected
+        }
+    };
+
+    const toggleTime = (time) => {
+        setSelectedTime(selectedTime === time ? '' : time);
+    };
+
+
+    const handleSelectSeats = () => {
+        // Navigate to the seats page with properly formatted query params
+        const queryParams = new URLSearchParams({
+            date: selectedDate,
+            time: selectedTime
+        }).toString();
+
+        router.push(`/movies/${id}/seats?${queryParams}`);
+    };
+    return (
+        <div className="p-4">
+            <h1 className="text-2xl font-bold">{movie.title}</h1>
+
+            {/* Flex container for description and trailer */}
+            <div className="flex flex-col md:flex-row">
+                <div className="md:w-1/2 md:pr-4">
+                    <p className="mt-2">{movie.description}</p>
+                    <h3 className="mt-4 font-semibold">Cast:</h3>
+                    <ul className="list-disc list-inside">
+                        {movie.cast.map((actor, index) => (
+                            <li key={index}>{actor}</li>
+                        ))}
+                    </ul>
+                </div>
+
+                {/* Movie trailer as a playable video */}
+                <div className="md:w-1/2 my-4">
+                    <iframe
+                        className="w-full h-64 md:h-96"
+                        src={movie.trailer}
+                        title={`${movie.title} trailer`}
+                        frameBorder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowFullScreen
+                    ></iframe>
+                </div>
+            </div>
+
+            <h2 className="text-xl font-semibold mt-4">Buy Tickets</h2>
+
+            {/* Row of dates */}
+            <div className="flex gap-2 my-4">
+                {availableDates.map((date) => (
+                    <button
+                        key={date}
+                        onClick={() => toggleDate(date)}
+                        className={`px-3 py-2 rounded ${selectedDate === date ? 'bg-blue-500' : 'bg-gray-500'} text-white`}
+                    >
+                        {date}
+                    </button>
+                ))}
+            </div>
+
+            {/* Row of showtimes */}
+            <div className="flex gap-2 my-4">
+                {availableTimes.map((time) => (
+                    <button
+                        key={time}
+                        onClick={() => toggleTime(time)}
+                        disabled={!selectedDate} // Disable if no date is selected
+                        className={`px-3 py-2 rounded ${selectedTime === time ? 'bg-blue-500' : 'bg-gray-500'} text-white ${!selectedDate ? 'opacity-50 cursor-not-allowed' : ''}`}
+                    >
+                        {time}
+                    </button>
+                ))}
+            </div>
+
+            {/* Display the selected date and time */}
+            {selectedDate && selectedTime && (
+                <div className="mt-4">
+                    <p>You selected {selectedDate} at {selectedTime}</p>
+                    <button onClick={handleSelectSeats} className="mt-2 px-6 py-2 bg-green-500 text-white rounded cursor-pointer">
+                        Select Seats
+                    </button>
+                </div>
+            )}
         </div>
-    )
+    );
 }
