@@ -14,17 +14,40 @@ export default function SelectSeats() {
     // Initialize the seat map with 20 available seats
     const initialSeatMap = Array.from({ length: 20 }, (_, i) => ({ id: i + 1, status: 'available' }));
     const [seats, setSeats] = useState(initialSeatMap); // Use React state to manage seat status
+    const [selectedSeats, setSelectedSeats] = useState([]); // State to track selected seat IDs
 
     // Handle seat click
     const toggleSeat = (seatId) => {
         setSeats((prevSeats) =>
-            prevSeats.map((seat) =>
-                seat.id === seatId
-                    ? { ...seat, status: seat.status === 'available' ? 'taken' : 'available' }
-                    : seat
-            )
+            prevSeats.map((seat) => {
+                if (seat.id === seatId) {
+                    const newStatus = seat.status === 'available' ? 'taken' : 'available';
+                    // Update selected seats based on new status
+                    if (newStatus === 'taken') {
+                        // Add to selected
+                        setSelectedSeats((prev) => [...new Set([...prev, seatId])]);
+                    } else {
+                        // Remove from selected
+                        setSelectedSeats((prev) => prev.filter(id => id !== seatId));
+                    }
+                    return { ...seat, status: newStatus };
+                }
+                return seat;
+            })
         );
-        console.log(seatId);
+        console.log(seatId)
+    };
+
+    // Handle confirm seats click
+    const confirmSeats = () => {
+        if (selectedSeats.length > 0) {
+            // Save or use the selected seats as needed
+            console.log('# of seats selected:', selectedSeats.length)
+            console.log('Seats purchased:', selectedSeats);
+            // Here you can redirect to another page or pass the data
+        } else {
+            console.log('Please select at least one seat to confirm.');
+        }
     };
 
     return (
@@ -34,7 +57,7 @@ export default function SelectSeats() {
 
             {/* Screen representation */}
             <div className="flex items-center justify-center mb-4">
-                <div className="mb-10 bg-gray-400 w-full h-6 flex items-center justify-center">
+                <div className="mt-10 mb-10 bg-gray-400 w-1/2 h-6 flex items-center justify-center">
                     <span className="text-white font-bold">SCREEN</span>
                 </div>
             </div>
@@ -58,6 +81,8 @@ export default function SelectSeats() {
                 <button 
                     className="px-6 py-2 text-white rounded" 
                     style={{ backgroundColor: '#4c7c92' }} // Applying the background color
+                    onClick={confirmSeats} // Handle button click
+                    disabled={selectedSeats.length === 0} // Disable if no seats are selected
                 >
                     Confirm Seats
                 </button>
