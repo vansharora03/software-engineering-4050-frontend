@@ -2,7 +2,7 @@
 /** This component renders the NavBar
  **/
 import { useEffect, useState } from "react";
-import movies from "../resources/movies.json"
+import {movies} from "@/lib/movieData"
 
 export default function NavBar() {
     const handleSearchClick = () => {

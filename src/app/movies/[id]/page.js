@@ -1,7 +1,7 @@
 'use client';
 import { useParams, useRouter } from 'next/navigation'; // For dynamic route params
 import MovieCard from "@/components/MovieCard";
-import { movies } from "@/lib/movieData";
+import {movies}  from "@/lib/movieData";
 import { useState } from 'react';
 import { format, addDays } from 'date-fns'; // For date formatting
 
@@ -59,12 +59,7 @@ export default function MovieInfo() {
             <div className="flex flex-col md:flex-row">
                 <div className="md:w-1/2 md:pr-4">
                     <p className="mt-2">{movie.description}</p>
-                    <h3 className="mt-4 font-semibold">Cast:</h3>
-                    <ul className="list-disc list-inside">
-                        {movie.cast.map((actor, index) => (
-                            <li key={index}>{actor}</li>
-                        ))}
-                    </ul>
+                    
                 </div>
 
                 {/* Movie trailer as a playable video */}
