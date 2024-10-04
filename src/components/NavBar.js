@@ -26,7 +26,8 @@ export default function NavBar() {
     return (
     <div className="navbar">
         <div className="buttonRow">
-        <a className="navbutton" href="/404">Bookings</a>
+        <a className="navbutton" href="/">Home</a>
+        <a className="navbutton" href="/booking">Bookings</a>
         <a className="navbutton" onClick={handleSearchClick}>Search</a>
         <a className="navbutton" href="/login">Login</a>
         </div>

@@ -9,9 +9,9 @@ export default function Register() {
         <InputField label="First Name" placeholder="Enter your first name" />
         <InputField label="Last Name" placeholder="Enter your last name" />
         <InputField label="Email" placeholder="Enter your email" />
-        <InputField label="Password" placeholder="Enter your password" />
-        <InputField label="Confirm Password" placeholder="Confirm your password" />
-        <button className="shadow appearance-none border rounded w-96 py-2 px-2 mt-4 mb-5 text-white-700 leading-tight focus:outline-none focus:shadow-outline">Sign up</button>
+        <InputField type="password" label="Password" placeholder="Enter your password" />
+        <InputField type="password" label="Confirm Password" placeholder="Confirm your password" />
+        <a href="/register/confirm"><button className="shadow appearance-none border rounded w-96 py-2 px-2 mt-4 mb-5 text-white-700 leading-tight focus:outline-none focus:shadow-outline">Sign up</button></a>
         <p>
           Already registered?{" "}
           <a 
