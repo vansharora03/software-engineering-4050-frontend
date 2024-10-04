@@ -159,3 +159,21 @@ body {
   background: #36757d;
   transform: scale(1.1);
 }
+
+.moviesDropdown {
+  display: none;
+  align-self: flex-end;
+
+}
+.moviesDropdownItem {
+  padding-right: 10px;
+  padding-left: 10px;
+  width: 30em;
+  color: black;
+  text-align: right;
+  background: white;
+  cursor: pointer;
+}
+.moviesDropdownItem:hover {
+  background: #4a8b9e;
+}
