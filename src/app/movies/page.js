@@ -1,17 +1,12 @@
 import MovieCard from "@/components/MovieCard";
-import { movies } from "@/lib/movieData";
+import MovieCarousel from "@/components/MovieCarousel";
+import {movies}  from "@/lib/movieData";
 import Link from 'next/link';
 export default function Movies() {
     return (
         <div>
-            {movies.map((movie) => (
-                <div key={movie.id}>
-                    <Link href={`/movies/${movie.id}`}/>
-                    <a>
-                        <MovieCard movie={movie} ></MovieCard>
-                    </a>
-                </div>
-            ))}
+            <MovieCarousel type={"Currently Showing"} movies={movies}></MovieCarousel>
+            <MovieCarousel type={"Currently Showing"} movies={movies}></MovieCarousel>
         </div>
     )
 }
