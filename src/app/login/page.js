@@ -7,14 +7,15 @@ export default function Login() {
         <div className="h-screen flex flex-col justify-center items-center">
         <p className="text-5xl font-bold mb-14">Login</p>
             <InputField label="Email" placeholder="Enter Email"></InputField>
-            <InputField label="Password" placeholder="Enter Password"></InputField>
+            <InputField type="password" label="Password" placeholder="Enter Password"></InputField>
             <button className="shadow appearance-none border rounded w-96 py-2 px-2 mt-4 mb-5 text-white-700 leading-tight focus:outline-none focus:shadow-outline">Login</button>
             <a 
             href="/reset" 
             className="text-blue-500 hover:text-blue-700 transition-colors duration-200"
           >
-            Forgot Password
+            Forgot Password?
           </a>
+          <div>Don't have an account? <a   className="text-blue-500 hover:text-blue-700 transition-colors duration-200" href="/register">Sign up</a></div>
         </div>
     </>
     );
