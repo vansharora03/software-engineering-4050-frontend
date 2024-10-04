@@ -40,7 +40,7 @@ body {
   justify-content: flex-end;
   gap: 1rem;
   padding: 0.5rem;
-  background-color: #3b3f42;
+  background-color: #2c2f33;
   height: 100px;
   align-items: center;
 }
@@ -53,15 +53,16 @@ body {
   height: 50px;
   width: 125px;
   padding: 10px;
-  background: #4c7c92;
+  background: #4a8b9e;
   color: #ffffff;
   border-radius: 25px;
   cursor: pointer;
-  transition: background-color 0.3s;
+  transition: background-color 0.3s, transform 0.2s;
 }
 
 .navbutton:hover {
   background: #36757d;
+  transform: scale(1.05);
 }
 
 .searchField {
@@ -76,14 +77,19 @@ body {
 
 .movieCard {
   background: #ffffff;
-  width: 400px;
+  width: 300px;
   height: 300px;
   display: flex;
   flex-direction: column;
   padding: 20px;
   gap: 15px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+  transition: transform 0.2s;
+}
+
+.movieCard:hover {
+  transform: translateY(-5px);
 }
 
 .movieCardTitle {
@@ -97,13 +103,59 @@ body {
 
 .movieCardBookButton {
   width: 150px;
-  height: 150px;
+  height: 40px;
   background: #4c7c92;
   color: #ffffff;
   border-radius: 25px;
-  transition: background-color 0.3s;
+  transition: background-color 0.3s, transform 0.2s;
 }
 
 .movieCardBookButton:hover {
   background: #36757d;
+  transform: scale(1.05);
+}
+
+.movies {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.movieCarousel {
+  width: 100vw;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow: hidden;
+  padding: 10px;
+}
+
+.arrow {
+  font-size: 2em;
+  color: #ffffff;
+  cursor: pointer;
+  background: #4a8b9e;
+  border: none;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  transition: background 0.3s, transform 0.2s;
+  align-self: center;
+  user-select: none;
+}
+
+.left-arrow {
+  margin-right: 15px;
+}
+
+.right-arrow {
+  margin-left: 15px;
+}
+
+.arrow:hover {
+  background: #36757d;
+  transform: scale(1.1);
 }
