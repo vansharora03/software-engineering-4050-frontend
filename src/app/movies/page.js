@@ -17,7 +17,7 @@ export default function Movies() {
     return (
         <div>
             <MovieCarousel type={"Currently Showing"} movies={movies}></MovieCarousel>
-            <MovieCarousel type={"Currently Showing"} movies={movies}></MovieCarousel>
+            <MovieCarousel type={"Coming Soon"} movies={movies}></MovieCarousel>
         </div>
     )
 }
