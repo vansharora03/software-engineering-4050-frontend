@@ -12,7 +12,15 @@ export default function SelectSeats() {
     const id = params.id;
     const selectedDate = searchParams.get('date');
     const selectedTime = searchParams.get('time');
-    const movie = movies.find((movie) => movie.id === parseInt(id));
+    const [movie, setMovie] = useState({})
+    useEffect(() => {
+        const getMovie = async () => {
+            const response = await fetch(`http://127.0.0.1:8000/v1/movies/${id}`)
+            const result = await response.json()
+            setMovie(result.movie)
+        }
+        getMovie()
+    })
 
     const initialSeatMap = Array.from({ length: 20 }, (_, i) => ({ id: i + 1, status: 'available' }));
     const { selectedSeats, setSelectedSeats } = useSelectedSeats();

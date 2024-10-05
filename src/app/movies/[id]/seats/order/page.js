@@ -16,8 +16,15 @@ export default function SelectAges() {
     const selectedDate = searchParams.get('date');
     const selectedTime = searchParams.get('time');
     const id = params.id;
-    const movie = movies.find((movie) => movie.id === parseInt(id)); // Find the movie by `id`
-
+    const [movie, setMovie] = useState({})
+    useEffect(() => {
+        const getMovie = async () => {
+            const response = await fetch(`http://127.0.0.1:8000/v1/movies/${id}`)
+            const result = await response.json()
+            setMovie(result.movie)
+        }
+        getMovie()
+    })
     const childPrice = 8.00;
     const adultPrice = 12.00;
     const seniorPrice = 10.00;

@@ -13,8 +13,15 @@ export default function CheckoutPage() {
     const selectedTime = searchParams.get('time');
     const seats = searchParams.get('seats').split(',');
     const id = params.id;
-    const movie = movies.find((movie) => movie.id === parseInt(id));
-
+    const [movie, setMovie] = useState({})
+    useEffect(() => {
+        const getMovie = async () => {
+            const response = await fetch(`http://127.0.0.1:8000/v1/movies/${id}`)
+            const result = await response.json()
+            setMovie(result.movie)
+        }
+        getMovie()
+    })
     const [totalPrice, setTotalPrice] = useState(0);
     const childPrice = 8.00;
     const adultPrice = 12.00;
