@@ -2,7 +2,6 @@
 /** This component renders the NavBar
  **/
 import { useEffect, useState } from "react";
-import {movies} from "@/lib/movieData"
 
 export default function NavBar() {
     const handleSearchClick = () => {
@@ -14,7 +13,16 @@ export default function NavBar() {
     }
     const [searchInput, setSearchInput] = useState("")
     const [displayedMovies, setDisplayedMovies] = useState([])
+    const [movies, setMovies] = useState([])
 
+    useEffect(() => {
+        const fetchMovies = async () => {
+            const response = await fetch('http://127.0.0.1:8000/v1/movies')
+            const result = await response.json()
+            setMovies(result.movies)
+        }
+        fetchMovies()
+    }, [])
 
     useEffect(() => {
         if (searchInput === "") {
@@ -26,7 +34,8 @@ export default function NavBar() {
     return (
     <div className="navbar">
         <div className="buttonRow">
-        <a className="navbutton" href="/404">Bookings</a>
+        <a className="navbutton" href="/">Home</a>
+        <a className="navbutton" href="/booking">Bookings</a>
         <a className="navbutton" onClick={handleSearchClick}>Search</a>
         <a className="navbutton" href="/login">Login</a>
         </div>
