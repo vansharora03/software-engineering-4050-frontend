@@ -29,6 +29,8 @@ export default function CheckoutPage() {
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [paymentInfo, setPaymentInfo] = useState('');
+    const [cvv, setCvv] = useState('');
+    const [billingAddress, setBillingAddress] = useState('');
 
     const [childCount] = useState(parseInt(searchParams.get('childCount')) || 0);
     const [adultCount] = useState(parseInt(searchParams.get('adultCount')) || 0);
@@ -102,6 +104,28 @@ export default function CheckoutPage() {
                         onChange={(e) => setPaymentInfo(e.target.value)}
                         className="w-full px-4 py-2 border border-gray-300 rounded-lg"
                         placeholder="Card Number"
+                        required
+                    />
+                </div>
+                <div className="mb-4">
+                    <label className="block text-lg font-medium mb-2">CVV:</label>
+                    <input
+                        type="text"
+                        value={cvv}
+                        onChange={(e) => setCvv(e.target.value)}
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+                        placeholder="CVV"
+                        required
+                    />
+                </div>
+                <div className="mb-4">
+                    <label className="block text-lg font-medium mb-2">Billing Address:</label>
+                    <input
+                        type="text"
+                        value={billingAddress}
+                        onChange={(e) => setBillingAddress(e.target.value)}
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+                        placeholder="Billing Address"
                         required
                     />
                 </div>
