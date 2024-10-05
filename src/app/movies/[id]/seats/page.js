@@ -20,11 +20,11 @@ export default function SelectSeats() {
 
     // Effect to clear selected seats when component mounts
     useEffect(() => {
-        // Clear selected seats when navigating back
         setSelectedSeats([]);
         setSeats(initialSeatMap); // Reset seat map
     }, [id, selectedDate, selectedTime]);
 
+    // toggle seat if available or taken when it is clicked
     const toggleSeat = (seatId) => {
         setSeats((prevSeats) =>
             prevSeats.map((seat) => {
@@ -42,6 +42,7 @@ export default function SelectSeats() {
         );
     };
 
+    // confirm seats when button is clicked
     const confirmSeats = () => {
         if (selectedSeats.length > 0) {
             const orderUrl = `/movies/${id}/seats/order`;

@@ -34,8 +34,6 @@ export default function CheckoutPage() {
 
     const handleConfirmCheckout = (e) => {
         e.preventDefault();
-        // Implement actual confirmation logic, like sending order to the server
-        alert(`Checkout confirmed for ${name}, an email will be sent to ${email}`);
         router.push('/confirmation');
     };
 

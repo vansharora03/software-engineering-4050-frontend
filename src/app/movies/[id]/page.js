@@ -7,25 +7,21 @@ import { format, addDays } from 'date-fns'; // For date formatting
 
 export default function MovieInfo() {
     const router = useRouter();
-    const params = useParams(); // Get the dynamic route param
-    const id = params.id; // Extract the `id` from the URL
-    const movie = movies.find((movie) => movie.id === parseInt(id)); // Find the movie by `id`
+    const params = useParams();
+    const id = params.id;
+    const movie = movies.find((movie) => movie.id === parseInt(id));
     
-    // State to store the selected date and time
     const [selectedDate, setSelectedDate] = useState('');
     const [selectedTime, setSelectedTime] = useState('');
 
-    // Calculate available dates (current week starting from today)
-    // Array.from automatically increments the 'index' up to length:7
+    // Calculate available dates
     const availableDates = Array.from({ length: 7 }, (_, index) => {
         const date = addDays(new Date(), index);
         return format(date, 'EEE MMM d'); // Format: "Thu Oct 10"
     });
 
-    // Available showtimes
     const availableTimes = ['12:00 PM', '3:00 PM', '6:00 PM', '9:00 PM'];
 
-    // Handle case when movie is not found
     if (!movie) {
         return <div>Movie not found</div>;
     }
@@ -43,7 +39,7 @@ export default function MovieInfo() {
 
 
     const handleSelectSeats = () => {
-        // Navigate to the seats page with properly formatted query params
+        // Go to the seats page 
         const queryParams = new URLSearchParams({
             date: selectedDate,
             time: selectedTime
@@ -55,14 +51,12 @@ export default function MovieInfo() {
         <div className="p-4">
             <h1 className="text-2xl font-bold">{movie.title}</h1>
 
-            {/* Flex container for description and trailer */}
             <div className="flex flex-col md:flex-row">
                 <div className="md:w-1/2 md:pr-4">
                     <p className="mt-2">{movie.description}</p>
                     
                 </div>
 
-                {/* Movie trailer as a playable video */}
                 <div className="md:w-1/2 my-4">
                     <iframe
                         className="w-full h-64 md:h-96"
@@ -77,7 +71,6 @@ export default function MovieInfo() {
 
             <h2 className="text-xl font-semibold mt-4">Buy Tickets</h2>
 
-            {/* Row of dates */}
             <div className="flex gap-2 my-4">
                 {availableDates.map((date) => (
                     <button
@@ -90,7 +83,6 @@ export default function MovieInfo() {
                 ))}
             </div>
 
-            {/* Row of showtimes */}
             <div className="flex gap-2 my-4">
                 {availableTimes.map((time) => (
                     <button
@@ -104,7 +96,6 @@ export default function MovieInfo() {
                 ))}
             </div>
 
-            {/* Display the selected date and time */}
             {selectedDate && selectedTime && (
                 <div className="mt-4">
                     <p>You selected {selectedDate} at {selectedTime}</p>
