@@ -1,15 +1,21 @@
 'use client';
 import { useParams, useRouter } from 'next/navigation'; // For dynamic route params
-import MovieCard from "@/components/MovieCard";
-import {movies}  from "@/lib/movieData";
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { format, addDays } from 'date-fns'; // For date formatting
 
 export default function MovieInfo() {
     const router = useRouter();
     const params = useParams(); // Get the dynamic route param
     const id = params.id; // Extract the `id` from the URL
-    const movie = movies.find((movie) => movie.id === parseInt(id)); // Find the movie by `id`
+    const [movie, setMovie] = useState({})
+    useEffect(() => {
+        const getMovie = async () => {
+            const response = await fetch(`http://127.0.0.1:8000/v1/movies/${id}`)
+            const result = await response.json()
+            setMovie(result.movie)
+        }
+        getMovie()
+    })
     
     // State to store the selected date and time
     const [selectedDate, setSelectedDate] = useState('');
@@ -26,7 +32,7 @@ export default function MovieInfo() {
     const availableTimes = ['12:00 PM', '3:00 PM', '6:00 PM', '9:00 PM'];
 
     // Handle case when movie is not found
-    if (!movie) {
+    if (movie == {}) {
         return <div>Movie not found</div>;
     }
 
@@ -66,7 +72,7 @@ export default function MovieInfo() {
                 <div className="md:w-1/2 my-4">
                     <iframe
                         className="w-full h-64 md:h-96"
-                        src={movie.trailer}
+                        src={movie.trailer_link}
                         title={`${movie.title} trailer`}
                         frameBorder="0"
                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"

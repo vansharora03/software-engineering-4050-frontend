@@ -2,7 +2,7 @@ export default function MovieCard({movie}) {
     return (
         <div className="movieCard" id={`movie-${movie.id}`}>
             <h2 className="movieCardTitle" id={`movie-${movie.id}-title`}>{movie.title}</h2>
-            <iframe className="movieCardTrailer" id={`movie-${movie.id}-video`} src={movie.trailer}></iframe>
+            <iframe className="movieCardTrailer" id={`movie-${movie.id}-video`} src={movie.trailer_link}></iframe>
             <a href={`/movies/${movie.id}`}><button className="movieCardBookButton">Book</button></a>
         </div>
     )

@@ -26,11 +26,11 @@ export default function MovieCarousel({type, movies, carouselWidth=4}) {
         <div className="movieCarousel">
             <h1>{type}</h1>
             <div className="movies">
-            <div class="arrow left-arrow" onClick={handleLeftArrowClick}>&#10094;</div>
+            <div className="arrow left-arrow" onClick={handleLeftArrowClick}>&#10094;</div>
             {wrapAroundSlice(movies, start, start + carouselWidth).map(movie => {
                 return <MovieCard movie={movie}></MovieCard>
             })}
-            <div class="arrow right-arrow" onClick={handleRightArrowClick}>&#10095;</div>
+            <div className="arrow right-arrow" onClick={handleRightArrowClick}>&#10095;</div>
             </div>
         </div>
     )
