@@ -56,7 +56,7 @@ export default function NavBar() {
                 <a className="navbutton" href="/booking">Bookings</a>
                 <a className="navbutton" onClick={handleSearchClick}>Search</a>
                 {isLoggedIn ? (
-                    <a className="navbutton" onClick={handleLogout}>Sign Out</a>
+                    <a className="navbutton" href="/profile">Profile</a>
                 ) : (
                     <a className="navbutton" href="/login">Login</a>
                 )}

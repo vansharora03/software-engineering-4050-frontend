@@ -1,0 +1,1 @@
+// page that should open when the link is clicked in the email confirmation
