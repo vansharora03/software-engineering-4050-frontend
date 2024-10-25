@@ -72,8 +72,7 @@ export default function Register() {
     const data = await response.json();
     if (response.ok) {
       localStorage.setItem('token', data.token);
-      alert('Signup successful! Please check your email for verification.');
-      router.push('/');
+      router.push('register/confirm')
     } else {
       setErrors({ signup: 'Signup failed: ' + JSON.stringify(data) });
     }
@@ -81,7 +80,7 @@ export default function Register() {
 
   return (
     <>
-      <div className="h-screen flex flex-col justify-start items-center px-4 pt-8"> {/* Adjusted justify-start and padding */}
+      <div className="h-screen flex flex-col justify-start items-center px-4 pt-8">
         <p className="text-4xl font-bold mb-8">Sign up</p>
         <form onSubmit={handleSignup} className="grid grid-cols-2 gap-4 w-full max-w-3xl">
           <div className="col-span-1">
