@@ -16,8 +16,8 @@ export default function Movies() {
     }, [])
     return (
         <div>
-            <MovieCarousel type={"Currently Showing"} movies={movies}></MovieCarousel>
-            <MovieCarousel type={"Coming Soon"} movies={movies}></MovieCarousel>
+            <MovieCarousel type={"Currently Showing"} movies={movies.filter(m => new Date(m.release_date) < new Date())}></MovieCarousel>
+            <MovieCarousel type={"Coming Soon"} movies={movies.filter(m => new Date(m.release_date) > new Date())}></MovieCarousel>
         </div>
     )
 }
