@@ -3,8 +3,8 @@ import { useRouter, useParams, useSearchParams } from 'next/navigation';
 import { movies } from "@/lib/movieData";
 import { useState, useEffect } from 'react';
 import { useSelectedSeats } from '@/context/selectedSeatsContext';
-
-export default function SelectAges() {
+import withAuth from '@/components/authGuard';
+function SelectAges() {
     const router = useRouter();
     const { selectedSeats } = useSelectedSeats();
     const [childCount, setChildCount] = useState(0);
@@ -133,3 +133,4 @@ export default function SelectAges() {
         </div>
     );
 }
+export default withAuth(SelectAges);

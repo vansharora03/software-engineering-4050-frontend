@@ -1,6 +1,7 @@
 'use client'
+import withAuth from '@/components/authGuard';
 import {useRouter} from 'next/navigation'
-export default function OrderConfirmation() {
+function OrderConfirmation() {
     const router = useRouter();
     return (
         <div className="flex flex-col items-center justify-center h-screen">
@@ -23,3 +24,4 @@ export default function OrderConfirmation() {
         </div>
     );
 }
+export default withAuth(OrderConfirmation);
