@@ -1,5 +1,5 @@
 "use client"
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import InputField from "@/components/InputField";
 
@@ -8,6 +8,7 @@ export default function Login() {
     const [password, setPassword] = useState('');
     const [error, setError] = useState(null);
     const router = useRouter();
+
 
     // Function to handle login request
     const handleLogin = async (e) => {

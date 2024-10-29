@@ -18,9 +18,9 @@ function ProfilePage() {
     const [successMessage, setSuccessMessage] = useState(null);
 
     const [paymentCards, setPaymentCards] = useState([
-        { id: 1, cardholder_name: '', card_number: '', billingAddress: '', expiry_date: '' },
-        { id: 2, cardholder_name: '', card_number: '', billingAddress: '', expiry_date: '' },
-        { id: 3, cardholder_name: '', card_number: '', billingAddress: '', expiry_date: '' },
+        { id: 1, cardholder_name: '', card_number: '', billing_address: '', expiry_date: '' },
+        { id: 2, cardholder_name: '', card_number: '', billing_address: '', expiry_date: '' },
+        { id: 3, cardholder_name: '', card_number: '', billing_address: '', expiry_date: '' },
     ]);
 
     useEffect(() => {
@@ -43,8 +43,8 @@ function ProfilePage() {
                 setAddress(data.address);
                 setEmail(data.email);
                 const placeholderCards = [ { id: 1, cardholder_name: '', card_number: '', billing_address: '', expiry_date: '' },
-                    { id: 2, cardholder_name: '', card_number: '', billingAddress: '', expiry_date: '' },
-                    { id: 3, cardholder_name: '', card_number: '', billingAddress: '', expiry_date: '' },]
+                    { id: 2, cardholder_name: '', card_number: '', billing_address: '', expiry_date: '' },
+                    { id: 3, cardholder_name: '', card_number: '', billing_address: '', expiry_date: '' },]
                     const response2 = await fetch('http://127.0.0.1:8000/v1/payment-cards', {
                         method: 'GET',
                         headers: {
@@ -188,12 +188,12 @@ function ProfilePage() {
                         <p className="text-lg">{email}</p>
                     </div>
                     {paymentCards
-                        .filter((card) => card.card_number)
+                        .filter((card) => card.cardholder_name)
                         .map((card) => (
                             <div key={card.id} className="mb-4">
                                 <p className="text-lg font-medium">Payment Card {card.id}:</p>
                                 <p className="text-lg">Cardholder: {card.cardholder_name}</p>
-                                <p className="text-lg">Billing Address: {card.billingAddress}</p>
+                                <p className="text-lg">Billing Address: {card.billing_address}</p>
                                 <p className="text-lg">Expiry Date: {card.expiry_date}</p>
                             </div>
                         ))}
@@ -213,7 +213,7 @@ function ProfilePage() {
                     </div>
                 </div>
             ) : (
-                <form onSubmit={handleSaveChanges} className="w-full max-w-md bg-white p-6 rounded-lg shadow-lg">
+                <form onSubmit={handleSaveChanges} className="w-full max-w-md bg-white p-6 rounded-lg shadow-lg overflow-y-auto">
                     <div className="mb-4">
                         <label className="block text-lg font-medium mb-2">First Name:</label>
                         <input
@@ -273,8 +273,8 @@ function ProfilePage() {
                             <input
                                 type="text"
                                 placeholder="Billing Address"
-                                value={card.billingAddress}
-                                onChange={(e) => handleCardChange(card.id, 'billingAddress', e.target.value)}
+                                value={card.billing_address}
+                                onChange={(e) => handleCardChange(card.id, 'billing_address', e.target.value)}
                                 className="w-full px-4 py-2 mb-2 border border-gray-300 rounded-lg"
                             />
                             <input
@@ -287,7 +287,15 @@ function ProfilePage() {
                         </div>
                     ))}
                     <div className="mb-4">
-                        <label className="block text-lg font-medium mb-2">Current Password:</label>
+                        <label className="block text-lg font-medium mb-2">New Password:</label>
+                        <input
+                            type="password"
+                            value={newPassword}
+                            onChange={(e) => setNewPassword(e.target.value)}
+                            className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+                        />
+                    <div className="mb-4">
+                        <label className="block text-lg font-medium mb-2">Enter Password To Save Changes:</label>
                         <input
                             type="password"
                             value={currentPassword}
@@ -297,14 +305,6 @@ function ProfilePage() {
                         />
                         {currentPasswordError && <p className="text-red-600 text-sm">{currentPasswordError}</p>}
                     </div>
-                    <div className="mb-4">
-                        <label className="block text-lg font-medium mb-2">New Password:</label>
-                        <input
-                            type="password"
-                            value={newPassword}
-                            onChange={(e) => setNewPassword(e.target.value)}
-                            className="w-full px-4 py-2 border border-gray-300 rounded-lg"
-                        />
                     </div>
                     <div className="flex justify-between">
                         <button

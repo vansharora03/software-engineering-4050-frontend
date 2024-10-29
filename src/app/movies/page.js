@@ -6,6 +6,7 @@ import MovieCarousel from "@/components/MovieCarousel";
 import Link from 'next/link';
 export default function Movies() {
     const [movies, setMovies] = useState([])
+
     useEffect(() => {
         const fetchMovies = async () => {
             const response = await fetch('http://127.0.0.1:8000/v1/movies')
