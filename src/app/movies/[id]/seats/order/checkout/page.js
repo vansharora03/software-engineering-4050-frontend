@@ -3,8 +3,9 @@ import { useRouter, useParams, useSearchParams } from 'next/navigation';
 import { movies } from "@/lib/movieData";
 import { useState, useEffect } from 'react';
 import { useSelectedSeats } from '@/context/selectedSeatsContext';
+import withAuth from '@/components/authGuard';
 
-export default function CheckoutPage() {
+function CheckoutPage() {
     const router = useRouter();
     const { selectedSeats } = useSelectedSeats();
     const params = useParams();
@@ -149,3 +150,4 @@ export default function CheckoutPage() {
         </div>
     );
 }
+export default withAuth(CheckoutPage);
