@@ -17,6 +17,12 @@ function ProfilePage() {
     const [newPassword, setNewPassword] = useState('');
     const [successMessage, setSuccessMessage] = useState(null);
 
+    const [paymentCards, setPaymentCards] = useState([
+        { id: 1, cardholder_name: '', card_number: '', billingAddress: '', expiry_date: '' },
+        { id: 2, cardholder_name: '', card_number: '', billingAddress: '', expiry_date: '' },
+        { id: 3, cardholder_name: '', card_number: '', billingAddress: '', expiry_date: '' },
+    ]);
+
     useEffect(() => {
         const fetchProfileData = async () => {
             const token = localStorage.getItem('token');
@@ -36,8 +42,32 @@ function ProfilePage() {
                 setLastName(data.last_name);
                 setAddress(data.address);
                 setEmail(data.email);
+                const placeholderCards = [ { id: 1, cardholder_name: '', card_number: '', billing_address: '', expiry_date: '' },
+                    { id: 2, cardholder_name: '', card_number: '', billingAddress: '', expiry_date: '' },
+                    { id: 3, cardholder_name: '', card_number: '', billingAddress: '', expiry_date: '' },]
+                    const response2 = await fetch('http://127.0.0.1:8000/v1/payment-cards', {
+                        method: 'GET',
+                        headers: {
+                            'Authorization': `Token ${token}`,
+                            'Content-Type': 'application/json',
+                        },
+                    });
+    
+                if (!response2.ok) throw new Error('Failed to fetch profile data');
+                const data2 = await response2.json();
+                console.log(data2)
+                let i = 0
+                for (const pc of data2) {
+                    placeholderCards[i] = pc
+                    placeholderCards[i].card_number = ''
+                    i++;
+                }
+                setPaymentCards(placeholderCards);
+                console.log(paymentCards)
             } catch (error) {
-                setError('Failed to load profile');
+                console.log(error)
+                localStorage.removeItem('token');
+                router.push('/login');
             } finally {
                 setLoading(false);
             }
@@ -52,47 +82,67 @@ function ProfilePage() {
     };
 
     const handleSaveChanges = async (e) => {
-    e.preventDefault();
-    const token = localStorage.getItem('token');
-    const updatedData = {
-        first_name: firstName,
-        last_name: lastName,
-        address: address,
-        current_password: currentPassword,
-        new_password: newPassword,
-    };
+        e.preventDefault();
+        const token = localStorage.getItem('token');
+        const updatedData = {
+            first_name: firstName,
+            last_name: lastName,
+            address: address,
+            current_password: currentPassword,
+            new_password: newPassword,
+        };
 
-    try {
-        const response = await fetch('http://127.0.0.1:8000/profile/', {
-            method: 'PUT',
-            headers: {
-                'Authorization': `Token ${token}`,
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(updatedData),
-        });
+        try {
+            const response = await fetch('http://127.0.0.1:8000/profile/', {
+                method: 'PUT',
+                headers: {
+                    'Authorization': `Token ${token}`,
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(updatedData),
+            });
 
-        // Check for 200 OK status for successful updates
-        if (response.ok) {
-            setCurrentPasswordError(null); // Reset current password error
-            setSuccessMessage('Profile updated successfully!');
-            setIsEditing(false);
-            setCurrentPassword('');
-            setNewPassword('');
-        } else {
-            const errData = await response.json();
+            await fetch('http://127.0.0.1:8000/v1/payment-cards/delete', {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': `Token ${token}`,
+                    'Content-Type': 'application/json',
+                }
+            });
 
-            // Handle specific error cases
-            if (errData.detail === "Invalid credentials") {
-                setCurrentPasswordError('Current password is incorrect.');
-            } else {
-                setError(errData.message || 'Failed to update profile');
+            for (const pc of paymentCards) {
+                console.log(JSON.stringify(pc))
+                if (pc.cardholder_name !== '') {
+                    await fetch('http://127.0.0.1:8000/v1/payment-cards/add', {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': `Token ${token}`,
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(pc)
+                    });
+                }
             }
+
+
+            if (response.ok) {
+                setCurrentPasswordError(null);
+                setSuccessMessage('Profile updated successfully!');
+                setIsEditing(false);
+                setCurrentPassword('');
+                setNewPassword('');
+            } else {
+                const errData = await response.json();
+                if (errData.detail === 'Invalid credentials') {
+                    setCurrentPasswordError('Current password is incorrect.');
+                } else {
+                    setError(errData.message || 'Failed to update profile');
+                }
+            }
+        } catch (error) {
+            setError(error.message || 'Failed to update profile');
         }
-    } catch (error) {
-        setError(error.message || 'Failed to update profile');
-    }
-};
+    };
 
     const handleCancelEdit = () => {
         setIsEditing(false);
@@ -106,13 +156,14 @@ function ProfilePage() {
         router.push('/login');
     };
 
-    if (loading) {
-        return <div>Loading...</div>;
-    }
+    const handleCardChange = (id, field, value) => {
+        setPaymentCards((prevCards) =>
+            prevCards.map((card) => (card.id === id ? { ...card, [field]: value } : card))
+        );
+    };
 
-    if (error) {
-        return <div>{error}</div>;
-    }
+    if (loading) return <div>Loading...</div>;
+    if (error) return <div>{error}</div>;
 
     return (
         <div className="flex flex-col items-center justify-center h-screen">
@@ -136,6 +187,16 @@ function ProfilePage() {
                         <p className="text-lg font-medium">Email:</p>
                         <p className="text-lg">{email}</p>
                     </div>
+                    {paymentCards
+                        .filter((card) => card.card_number)
+                        .map((card) => (
+                            <div key={card.id} className="mb-4">
+                                <p className="text-lg font-medium">Payment Card {card.id}:</p>
+                                <p className="text-lg">Cardholder: {card.cardholder_name}</p>
+                                <p className="text-lg">Billing Address: {card.billingAddress}</p>
+                                <p className="text-lg">Expiry Date: {card.expiry_date}</p>
+                            </div>
+                        ))}
                     <div className="flex justify-between">
                         <button
                             onClick={handleEditToggle}
@@ -192,6 +253,39 @@ function ProfilePage() {
                             className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-200"
                         />
                     </div>
+                    {paymentCards.map((card) => (
+                        <div key={card.id} className="mb-4">
+                            <h2 className="text-lg font-medium">Payment Card {card.id}</h2>
+                            <input
+                                type="text"
+                                placeholder="Cardholder Name"
+                                value={card.cardholder_name}
+                                onChange={(e) => handleCardChange(card.id, 'cardholder_name', e.target.value)}
+                                className="w-full px-4 py-2 mb-2 border border-gray-300 rounded-lg"
+                            />
+                            <input
+                                type="text"
+                                placeholder="Card Number"
+                                value={card.card_number}
+                                onChange={(e) => handleCardChange(card.id, 'card_number', e.target.value)}
+                                className="w-full px-4 py-2 mb-2 border border-gray-300 rounded-lg"
+                            />
+                            <input
+                                type="text"
+                                placeholder="Billing Address"
+                                value={card.billingAddress}
+                                onChange={(e) => handleCardChange(card.id, 'billingAddress', e.target.value)}
+                                className="w-full px-4 py-2 mb-2 border border-gray-300 rounded-lg"
+                            />
+                            <input
+                                type="text"
+                                placeholder="Expiry Date"
+                                value={card.expiry_date}
+                                onChange={(e) => handleCardChange(card.id, 'expiry_date', e.target.value)}
+                                className="w-full px-4 py-2 mb-2 border border-gray-300 rounded-lg"
+                            />
+                        </div>
+                    ))}
                     <div className="mb-4">
                         <label className="block text-lg font-medium mb-2">Current Password:</label>
                         <input
@@ -232,5 +326,7 @@ function ProfilePage() {
         </div>
     );
 }
+
+
 
 export default withAuth(ProfilePage);
