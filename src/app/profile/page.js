@@ -53,7 +53,7 @@ function ProfilePage() {
                         },
                     });
     
-                if (!response2.ok) throw new Error('Failed to fetch profile data');
+                if (!response2.ok) throw new Error('Failed to fetch profile data2');
                 const data2 = await response2.json();
                 console.log(data2)
                 let i = 0

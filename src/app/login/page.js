@@ -35,12 +35,13 @@ export default function Login() {
                 router.push('/');
             } else {
                 // If response is not okay, show the error
-                setError("Incorrect email or password");
+                setError(data.error || "Incorrect email or password");
             }
         } catch (err) {
             setError("An error occurred. Please try again.");
         }
     };
+
 
     return (
         <>
