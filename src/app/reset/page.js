@@ -17,12 +17,12 @@ export default function ResetPassword() {
     const handleEmailCheck = async (e) => {
         e.preventDefault();
         try {
-            const response = await fetch('http://127.0.0.1:8000/check_email/', {
+            const response = await fetch('http://127.0.0.1:8000/reset', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ email }),
+                body: JSON.stringify({ email:email }),
             });
 
             const data = await response.json();
@@ -30,57 +30,14 @@ export default function ResetPassword() {
                 setMessage('Email found! Enter your new password.');
                 setMessageType("success")
                 // Save the user ID to update the password later
-                setUid(data.uid);
-                // Move to step 2 
-                setStep(2); 
+                router.push('/login');
             } else {
-                setMessage(data.detail || 'Email not found');
+                setMessage(data.detail || 'Email not found. Please try again.');
                 setMessageType("error")
             }
         } catch (err) {
             setMessage('An error occurred. Please try again.');
             setMessageType('error');
-        }
-    };
-
-    //handle password reset
-    const handlePasswordReset = async (e) => {
-        e.preventDefault();
-
-        if (newPassword !== confirmPassword) {
-            setMessage('Passwords do not match');
-            setMessageType('error');
-            return;
-        }
-
-        try {
-            const response = await fetch('http://127.0.0.1:8000/reset_password/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    uid,
-                    new_password: newPassword,
-                    confirm_password: confirmPassword,
-                }),
-            });
-
-            const data = await response.json();
-
-            if (response.ok) {
-                setMessage('Password updated successfully!');
-                setMessageType("success")
-                setTimeout(() => {
-                    router.push('/login');
-                }, 2000);
-            } else {
-                setMessage(data.detail || 'An error occurred while updating the password.');
-                setMessageType("error")
-            }
-        } catch (err) {
-            setMessage('An error occurred. Please try again.');
-            setMessageType("error")
         }
     };
 
