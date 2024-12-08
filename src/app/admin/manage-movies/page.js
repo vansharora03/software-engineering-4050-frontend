@@ -1,12 +1,14 @@
 
 "use client";
 import React, { useState, useEffect } from 'react';
-
-export default function ManageMovies() {
+import withAuth from '@/components/authGuard';
+import {useRouter} from 'next/navigation';
+function ManageMovies() {
     const [movies, setMovies] = useState([]);
+    const router = useRouter();
     useEffect(() => {
         if (localStorage.getItem("token") !== "2df46f907c53c66c1220a0da60e64527da9f3519") {
-            redirect("/movies")
+            router.push("/movies")
         }
     })
     useEffect(() => {
@@ -43,3 +45,4 @@ export default function ManageMovies() {
         </div>
     );
 }
+export default withAuth(ManageMovies);
