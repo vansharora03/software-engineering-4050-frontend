@@ -1,6 +1,7 @@
 "use client"
 import { useState } from 'react';
 import InputField from '@/components/InputField';
+import { useRouter } from 'next/navigation';
 export default function ResetPassword() {
     const [step, setStep] = useState(1); // Step 1 for email input, Step 2 for password reset
     const [email, setEmail] = useState('');
@@ -9,6 +10,7 @@ export default function ResetPassword() {
     const [message, setMessage] = useState(null);
     const [messageType, setMessageType] = useState(null);
     const [uid, setUid] = useState(null); // store user id
+    const router = useRouter();
     
 
     //handle email verification
