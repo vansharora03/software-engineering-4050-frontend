@@ -1,8 +1,8 @@
 "use client";
 import React, { useEffect } from 'react';
 import { redirect, useRouter } from 'next/navigation';
-
-export default function AdminMainScreen() {
+import withAuth from '@/components/authGuard';
+function AdminMainScreen() {
     const router = useRouter();
 
     useEffect(() => {
@@ -48,3 +48,4 @@ export default function AdminMainScreen() {
         </div>
     );
 }
+export default withAuth(AdminMainScreen);

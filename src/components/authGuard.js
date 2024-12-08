@@ -1,17 +1,21 @@
 "use client"
-import { useEffect } from 'react';
+import { useEffect, useState} from 'react';
 import { useRouter } from 'next/navigation';
 // Function to redirect to /login if user is not signed in and is trying to access a page that needs privileges
 export default function withAuth(WrappedComponent) {
     function AuthGuard(props) {
         const router = useRouter();
+        const [isAuthenticating, setIsAuthenticating] = useState(true);
 
         useEffect(() => {
             const token = localStorage.getItem('token');
             if (!token) {
                 router.push('/login');
+            } else {
+                setIsAuthenticating(false);
             }
         }, [router]);
+        
         useEffect(() => {
             const checkAccountState = async () => {
             const token = localStorage.getItem('token');
@@ -39,6 +43,9 @@ export default function withAuth(WrappedComponent) {
 
             checkAccountState();
         }, [router]);
+        if (isAuthenticating) {
+            return <div>Loading...</div>;
+        }
         return <WrappedComponent {...props} />;
     }
 
