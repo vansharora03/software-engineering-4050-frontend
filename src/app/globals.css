@@ -46,24 +46,12 @@ body {
 }
 
 .navbutton {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  height: 50px;
-  width: 125px;
-  padding: 10px;
-  background: #4a8b9e;
-  color: #ffffff;
-  border-radius: 25px;
-  cursor: pointer;
-  transition: background-color 0.3s, transform 0.2s;
+  @apply flex justify-center items-center text-center h-12 w-32 px-4 rounded-full bg-teal-600 text-white cursor-pointer transition-transform duration-200;
+}
+.navbutton:hover {
+  @apply bg-teal-500 scale-105;
 }
 
-.navbutton:hover {
-  background: #36757d;
-  transform: scale(1.05);
-}
 
 .searchField {
   padding: 10px;
