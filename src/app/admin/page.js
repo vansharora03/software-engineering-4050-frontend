@@ -25,12 +25,7 @@ function AdminMainScreen() {
                 >
                     Manage Movies
                 </button>
-                <button
-                    onClick={() => router.push('/admin/manage-users')}
-                    className="bg-green-500 text-white p-4 rounded-lg"
-                >
-                    Manage Users
-                </button>
+                
                 <button
                     onClick={() => router.push('/admin/manage-promotions')}
                     className="bg-yellow-500 text-white p-4 rounded-lg"
