@@ -16,6 +16,7 @@ function ProfilePage() {
     const [currentPassword, setCurrentPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
     const [successMessage, setSuccessMessage] = useState(null);
+    const [isSubscribed, setIsSubscribed] = useState(null);
 
     const [paymentCards, setPaymentCards] = useState([
         { id: 1, cardholder_name: '', card_number: '', billing_address: '', expiry_date: '' },
@@ -42,6 +43,7 @@ function ProfilePage() {
                 setLastName(data.last_name);
                 setAddress(data.address);
                 setEmail(data.email);
+                setIsSubscribed(data.subscribed_to_promotions);
                 const placeholderCards = [ { id: 1, cardholder_name: '', card_number: '', billing_address: '', expiry_date: '' },
                     { id: 2, cardholder_name: '', card_number: '', billing_address: '', expiry_date: '' },
                     { id: 3, cardholder_name: '', card_number: '', billing_address: '', expiry_date: '' },]
@@ -90,6 +92,7 @@ function ProfilePage() {
             address: address,
             current_password: currentPassword,
             new_password: newPassword,
+            subscribed_to_promotions: isSubscribed,
         };
 
         try {
@@ -186,6 +189,15 @@ function ProfilePage() {
                     <div className="mb-4">
                         <p className="text-lg font-medium">Email:</p>
                         <p className="text-lg">{email}</p>
+                    </div>
+                    <div className="mb-4">
+                        <p className="text-lg font-medium">Subscribed to Promotions:</p>
+                        <input
+                            type="checkbox"
+                            checked={isSubscribed}
+                            readOnly
+                            className="w-4 h-4"
+                        />
                     </div>
                     {paymentCards
                         .filter((card) => card.cardholder_name)
@@ -286,6 +298,15 @@ function ProfilePage() {
                             />
                         </div>
                     ))}
+                    <div className="mb-4">
+                        <label className="block text-lg font-medium mb-2">Subscribed to Promotions:</label>
+                        <input
+                            type="checkbox"
+                            checked={isSubscribed}
+                            onChange={(e) => setIsSubscribed(e.target.checked)}
+                            className="w-4 h-4"
+                        />
+                    </div>
                     <div className="mb-4">
                         <label className="block text-lg font-medium mb-2">New Password:</label>
                         <input
