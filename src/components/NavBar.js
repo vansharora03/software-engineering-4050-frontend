@@ -9,6 +9,7 @@ export default function NavBar() {
     const [displayedMovies, setDisplayedMovies] = useState([]);
     const [movies, setMovies] = useState([]);
     const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [isAdmin, setIsAdmin] = useState(false)
 
     useEffect(() => {
         const fetchMovies = async () => {
@@ -31,6 +32,11 @@ export default function NavBar() {
 
     useEffect(() => {
         const token = localStorage.getItem("token");
+        if (token === "2df46f907c53c66c1220a0da60e64527da9f3519") {
+            setIsAdmin(true)
+        } else {
+            setIsAdmin(false)
+        }
         // !! converts a value to a boolean so if token exists !!token evaluates to true
         setIsLoggedIn(!!token);
     }, []);
@@ -56,7 +62,7 @@ export default function NavBar() {
                 <a className="navbutton" href="/booking">Bookings</a>
                 <a className="navbutton" onClick={handleSearchClick}>Search</a>
                 {isLoggedIn ? (
-                    <a className="navbutton" href="/profile">Profile</a>
+                    <a className="navbutton" href={isAdmin ? '/admin' : '/profile'}>{isAdmin ? 'Admin' : 'Profile'}</a>
                 ) : (
                     <a className="navbutton" href="/login">Login</a>
                 )}

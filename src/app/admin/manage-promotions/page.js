@@ -5,7 +5,11 @@ import React, { useState, useEffect } from 'react';
 export default function ManagePromotions() {
     const [promotions, setPromotions] = useState([]);
     const [newPromotion, setNewPromotion] = useState('');
-
+    useEffect(() => {
+        if (localStorage.getItem("token") !== "2df46f907c53c66c1220a0da60e64527da9f3519") {
+            redirect("/movies")
+        }
+    })
     useEffect(() => {
         const fetchPromotions = async () => {
             const response = await fetch('http://127.0.0.1:8000/v1/promotions');

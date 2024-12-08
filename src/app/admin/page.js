@@ -1,9 +1,19 @@
 "use client";
-import React from 'react';
-import { useRouter } from 'next/navigation';
+import React, { useEffect } from 'react';
+import { redirect, useRouter } from 'next/navigation';
 
 export default function AdminMainScreen() {
     const router = useRouter();
+
+    useEffect(() => {
+        if (localStorage.getItem("token") !== "2df46f907c53c66c1220a0da60e64527da9f3519") {
+            router.push("/movies")
+        }
+    })
+    const logOut = () => {
+        localStorage.removeItem("token")
+        router.push("/login")
+    }
 
     return (
         <div className="admin-main p-4">
@@ -27,6 +37,13 @@ export default function AdminMainScreen() {
                 >
                     Manage Promotions
                 </button>
+                <button
+                    onClick={logOut}
+                    className="bg-pink-500 text-white p-4 rounded-lg"
+                >
+                    Log Out
+                </button>
+
             </div>
         </div>
     );
