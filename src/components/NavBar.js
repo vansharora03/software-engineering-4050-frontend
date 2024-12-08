@@ -8,9 +8,20 @@ export default function NavBar() {
     const [searchInput, setSearchInput] = useState("");
     const [displayedMovies, setDisplayedMovies] = useState([]);
     const [movies, setMovies] = useState([]);
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem("token"));
     const [isAdmin, setIsAdmin] = useState(false)
 
+    useEffect(() => {
+        const token = localStorage.getItem("token");
+        if (token === "2df46f907c53c66c1220a0da60e64527da9f3519") {
+            setIsAdmin(true)
+        } else {
+            setIsAdmin(false)
+        }
+        // !! converts a value to a boolean so if token exists !!token evaluates to true
+        setIsLoggedIn(!!token);
+    }, [router.pathname]);
+    
     useEffect(() => {
         const fetchMovies = async () => {
             const response = await fetch('http://127.0.0.1:8000/v1/movies');
@@ -30,16 +41,7 @@ export default function NavBar() {
         }
     }, [searchInput, movies]);
 
-    useEffect(() => {
-        const token = localStorage.getItem("token");
-        if (token === "2df46f907c53c66c1220a0da60e64527da9f3519") {
-            setIsAdmin(true)
-        } else {
-            setIsAdmin(false)
-        }
-        // !! converts a value to a boolean so if token exists !!token evaluates to true
-        setIsLoggedIn(!!token);
-    }, []);
+ 
 
     const handleSearchClick = () => {
         const searchField = document.querySelector(".searchField");
@@ -51,8 +53,9 @@ export default function NavBar() {
     const handleLogout = () => {
         // take out token from local storage
         localStorage.removeItem("token");
+        localStorage.setItem("needs_refresh", true);
         setIsLoggedIn(false);
-        router.push("/login");
+        router.push("/");
     };
 
     return (
@@ -66,6 +69,7 @@ export default function NavBar() {
                 ) : (
                     <a className="navbutton" href="/login">Login</a>
                 )}
+                {isLoggedIn && <a className="navbutton" onClick={handleLogout}>Logout</a>}
             </div>
             <input 
                 type="text" 
