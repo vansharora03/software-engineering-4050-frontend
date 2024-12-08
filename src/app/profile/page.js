@@ -153,7 +153,8 @@ function ProfilePage() {
 
     const handleSignOut = () => {
         localStorage.removeItem('token');
-        router.push('/login');
+        localStorage.setItem('needs_refresh', true);
+        router.push('/movies');
     };
 
     const handleCardChange = (id, field, value) => {
