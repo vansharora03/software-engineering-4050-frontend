@@ -71,8 +71,7 @@ export default function Register() {
 
     const data = await response.json();
     if (response.ok) {
-      localStorage.setItem('token', data.token);
-      router.push('register/confirm')
+      router.push('register/confirm'); // Redirect to the confirmation page
     } else {
       setErrors({ signup: 'Signup failed: ' + JSON.stringify(data) });
     }

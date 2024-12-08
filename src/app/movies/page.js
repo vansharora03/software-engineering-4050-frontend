@@ -13,7 +13,12 @@ export default function Movies() {
             const result = await response.json()
             setMovies(result.movies)
         }
+        if (localStorage.getItem("needs_refresh")) {
+            localStorage.removeItem("needs_refresh")
+            window.location.reload()
+        }
         fetchMovies()
+
     }, [])
     return (
         <div>

@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import InputField from "@/components/InputField";
+import NavBar from '@/components/NavBar';
 
 export default function Login() {
     const [email, setEmail] = useState(''); 
@@ -31,8 +32,8 @@ export default function Login() {
             if (response.ok) {
                 // Store token in localStorage
                 localStorage.setItem('token', data.token);
-                // Redirect to homepage or dashboard
-                router.push('/');
+                localStorage.setItem('needs_refresh', true);
+                router.push("/");
             } else {
                 // If response is not okay, show the error
                 setError("Incorrect email or password");
@@ -43,7 +44,6 @@ export default function Login() {
     };
 
     return (
-        <>
             <div className="h-screen flex flex-col justify-center items-center">
                 <p className="text-5xl font-bold mb-14">Login</p>
 
@@ -94,6 +94,5 @@ export default function Login() {
                     </a>
                 </div>
             </div>
-        </>
     );
 }
