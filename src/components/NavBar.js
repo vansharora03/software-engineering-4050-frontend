@@ -8,7 +8,7 @@ export default function NavBar() {
     const [searchInput, setSearchInput] = useState("");
     const [displayedMovies, setDisplayedMovies] = useState([]);
     const [movies, setMovies] = useState([]);
-    const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem("token"));
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [isAdmin, setIsAdmin] = useState(false)
 
     useEffect(() => {
