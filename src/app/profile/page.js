@@ -59,7 +59,7 @@ function ProfilePage() {
     
                 if (!response2.ok) throw new Error('Failed to fetch profile data');
                 const data2 = await response2.json();
-                console.log(data2)
+                console.log("hef", data2)
                 let i = 0
                 for (const pc of data2) {
                     placeholderCards[i] = pc
