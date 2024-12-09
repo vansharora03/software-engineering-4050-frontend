@@ -62,7 +62,7 @@ export default function NavBar() {
         <div className="navbar">
             <div className="buttonRow">
                 <a className="navbutton" href="/">Home</a>
-                {isLoggedIn && <a className="navbutton" href="/booking">Bookings</a>}
+                {isLoggedIn && <a className="navbutton" href="/bookings">Bookings</a>}
                 <a className="navbutton" onClick={handleSearchClick}>Search</a>
                 {isLoggedIn ? (
                     <a className="navbutton" href={isAdmin ? '/admin' : '/profile'}>{isAdmin ? 'Admin' : 'Profile'}</a>
