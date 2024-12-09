@@ -22,7 +22,7 @@ export default function SelectSeats() {
             setMovie(result.movie)
         }
         getMovie()
-    })
+    }, [])
 
     
     const initialSeatMap = Array.from({ length: 20 }, (_, i) => ({ id: i + 1, status: 'available' }));
@@ -32,7 +32,7 @@ export default function SelectSeats() {
         const seatAvailability = async () => {
             const tempSeats = seats.map(seat => seat)
             for (let i = 0; i < tempSeats.length; i++) {
-                const response = await fetch(`http://127.0.0.1:8000/v1/showtimes/1/seats/1`)
+                const response = await fetch(`http://127.0.0.1:8000/v1/showtimes/${localStorage.getItem("selectedShowtimeId")}/seats/${tempSeats[i].id}`)
                 const result = await response.json()
                 if (!result.available) {
                     tempSeats[i].status = 'red'
@@ -42,7 +42,7 @@ export default function SelectSeats() {
             setSelectedSeats([])
         }
         seatAvailability()
-    })
+    }, [])
 
     // toggle seat if available or taken when it is clicked
     const toggleSeat = (seatId) => {
