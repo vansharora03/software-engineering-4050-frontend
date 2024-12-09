@@ -1,6 +1,5 @@
 'use client';
 import { useRouter, useParams, useSearchParams } from 'next/navigation';
-import { movies } from "@/lib/movieData";
 import { useState, useEffect } from 'react';
 import { useSelectedSeats } from '@/context/selectedSeatsContext';
 import withAuth from '@/components/authGuard';
@@ -14,28 +13,58 @@ function CheckoutPage() {
     const selectedTime = searchParams.get('time');
     const seats = searchParams.get('seats').split(',');
     const id = params.id;
-    const [movie, setMovie] = useState({})
-    useEffect(() => {
-        const getMovie = async () => {
-            const response = await fetch(`http://127.0.0.1:8000/v1/movies/${id}`)
-            const result = await response.json()
-            setMovie(result.movie)
-        }
-        getMovie()
-    })
+    const [movie, setMovie] = useState({});
     const [totalPrice, setTotalPrice] = useState(0);
-    const childPrice = 8.00;
-    const adultPrice = 12.00;
-    const seniorPrice = 10.00;
+    const [childCount] = useState(parseInt(searchParams.get('childCount')) || 0);
+    const [adultCount] = useState(parseInt(searchParams.get('adultCount')) || 0);
+    const [seniorCount] = useState(parseInt(searchParams.get('seniorCount')) || 0);
+
+    // States for payment information
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [paymentInfo, setPaymentInfo] = useState('');
     const [cvv, setCvv] = useState('');
     const [billingAddress, setBillingAddress] = useState('');
+    const [paymentCards, setPaymentCards] = useState([]); // State to store payment cards
+    const [selectedCard, setSelectedCard] = useState(''); // State to store selected card
+    const [isAddingCard, setIsAddingCard] = useState(false); // State to track if adding new card
 
-    const [childCount] = useState(parseInt(searchParams.get('childCount')) || 0);
-    const [adultCount] = useState(parseInt(searchParams.get('adultCount')) || 0);
-    const [seniorCount] = useState(parseInt(searchParams.get('seniorCount')) || 0);
+    const childPrice = 8.00;
+    const adultPrice = 12.00;
+    const seniorPrice = 10.00;
+
+    useEffect(() => {
+        const getMovie = async () => {
+            const response = await fetch(`http://127.0.0.1:8000/v1/movies/${id}`);
+            const result = await response.json();
+            setMovie(result.movie);
+        };
+        getMovie();
+    }, [id]);
+
+    useEffect(() => {
+        const fetchPaymentCards = async () => {
+            const response = await fetch('http://127.0.0.1:8000/v1/payment-cards', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Token ${localStorage.getItem('token')}` // Assuming token is stored in localStorage
+                }
+            });
+            const data = await response.json();
+            console.log("Fetched Payment Cards:", data); // Log the response data
+    
+            // Ensure data is an array before setting state
+            if (Array.isArray(data)) {
+                setPaymentCards(data); // Set the user's payment cards
+            } else {
+                console.error("Expected an array, but got:", data); // Log if the format is unexpected
+                setPaymentCards([]); // Fallback to an empty array
+            }
+        };
+        fetchPaymentCards();
+    }, []);
+    
 
     useEffect(() => {
         const total = (childPrice * childCount) + (adultPrice * adultCount) + (seniorPrice * seniorCount);
@@ -44,11 +73,26 @@ function CheckoutPage() {
 
     const handleConfirmCheckout = (e) => {
         e.preventDefault();
-        router.push('/confirmation');
+        // You can send the selected card information to the backend here
+        if (selectedCard || isAddingCard) {
+            router.push('/confirmation');
+        } else {
+            alert('Please select or add a payment card.');
+        }
     };
 
     const handleCancelCheckout = () => {
         router.push(`/movies/${id}`);
+    };
+
+    const handleCardSelectionChange = (e) => {
+        const value = e.target.value;
+        setSelectedCard(value);
+        if (value === 'add_card') {
+            setIsAddingCard(true); // Show new card input fields
+        } else {
+            setIsAddingCard(false); // Hide new card input fields
+        }
     };
 
     return (
@@ -97,39 +141,74 @@ function CheckoutPage() {
                         required
                     />
                 </div>
+
+                {/* Payment Cards Selection */}
                 <div className="mb-4">
-                    <label className="block text-lg font-medium mb-2">Payment Info:</label>
-                    <input
-                        type="text"
-                        value={paymentInfo}
-                        onChange={(e) => setPaymentInfo(e.target.value)}
+                    <label className="block text-lg font-medium mb-2">Select Payment Card:</label>
+                    <select
+                        value={selectedCard}
+                        onChange={handleCardSelectionChange}
                         className="w-full px-4 py-2 border border-gray-300 rounded-lg"
-                        placeholder="Card Number"
                         required
-                    />
+                    >
+                        <option value="">Select a card</option>
+                        {paymentCards.map((card) => (
+                            <option key={card.id} value={card.id}>
+                                {card.cardholder_name} ending in {card.last_four_digits}
+                            </option>
+                        ))}
+                        <option value="add_card">Add New Card</option>
+                    </select>
                 </div>
-                <div className="mb-4">
-                    <label className="block text-lg font-medium mb-2">CVV:</label>
-                    <input
-                        type="text"
-                        value={cvv}
-                        onChange={(e) => setCvv(e.target.value)}
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg"
-                        placeholder="CVV"
-                        required
-                    />
-                </div>
-                <div className="mb-4">
-                    <label className="block text-lg font-medium mb-2">Billing Address:</label>
-                    <input
-                        type="text"
-                        value={billingAddress}
-                        onChange={(e) => setBillingAddress(e.target.value)}
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg"
-                        placeholder="Billing Address"
-                        required
-                    />
-                </div>
+
+                {/* Add Card Form */}
+                {isAddingCard && (
+                    <div className="space-y-4">
+                        <div className="mb-4">
+                            <label className="block text-lg font-medium mb-2">Cardholder Name:</label>
+                            <input
+                                type="text"
+                                value={name}
+                                onChange={(e) => setName(e.target.value)}
+                                className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+                                required
+                            />
+                        </div>
+                        <div className="mb-4">
+                            <label className="block text-lg font-medium mb-2">Card Number:</label>
+                            <input
+                                type="text"
+                                value={paymentInfo}
+                                onChange={(e) => setPaymentInfo(e.target.value)}
+                                className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+                                placeholder="Card Number"
+                                required
+                            />
+                        </div>
+                        <div className="mb-4">
+                            <label className="block text-lg font-medium mb-2">Expiry Date</label>
+                            <input
+                                type="text"
+                                value={cvv}
+                                onChange={(e) => setCvv(e.target.value)}
+                                className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+                                placeholder="CVV"
+                                required
+                            />
+                        </div>
+                        <div className="mb-4">
+                            <label className="block text-lg font-medium mb-2">Billing Address:</label>
+                            <input
+                                type="text"
+                                value={billingAddress}
+                                onChange={(e) => setBillingAddress(e.target.value)}
+                                className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+                                placeholder="Billing Address"
+                                required
+                            />
+                        </div>
+                    </div>
+                )}
 
                 <div className="flex justify-between mt-6">
                     <button
@@ -150,4 +229,5 @@ function CheckoutPage() {
         </div>
     );
 }
+
 export default withAuth(CheckoutPage);
