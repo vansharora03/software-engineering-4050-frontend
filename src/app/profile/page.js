@@ -17,11 +17,12 @@ function ProfilePage() {
     const [newPassword, setNewPassword] = useState('');
     const [successMessage, setSuccessMessage] = useState(null);
     const [isSubscribed, setIsSubscribed] = useState(null);
-
+    const [last_four_digits, setLastFourDigits] = useState('');
+  
     const [paymentCards, setPaymentCards] = useState([
-        { id: 1, cardholder_name: '', card_number: '', billing_address: '', expiry_date: '' },
-        { id: 2, cardholder_name: '', card_number: '', billing_address: '', expiry_date: '' },
-        { id: 3, cardholder_name: '', card_number: '', billing_address: '', expiry_date: '' },
+        { id: 1, cardholder_name: '', card_number: '', billing_address: '', expiry_date: '', last_four_digits: '' },
+        { id: 2, cardholder_name: '', card_number: '', billing_address: '', expiry_date: '', last_four_digits: '' },
+        { id: 3, cardholder_name: '', card_number: '', billing_address: '', expiry_date: '', last_four_digits: '' },
     ]);
 
     useEffect(() => {
@@ -44,9 +45,10 @@ function ProfilePage() {
                 setAddress(data.address);
                 setEmail(data.email);
                 setIsSubscribed(data.subscribed_to_promotions);
-                const placeholderCards = [ { id: 1, cardholder_name: '', card_number: '', billing_address: '', expiry_date: '' },
-                    { id: 2, cardholder_name: '', card_number: '', billing_address: '', expiry_date: '' },
-                    { id: 3, cardholder_name: '', card_number: '', billing_address: '', expiry_date: '' },]
+                setLastFourDigits(data.last_four_digits);
+                const placeholderCards = [ { id: 1, cardholder_name: '', card_number: '', billing_address: '', expiry_date: '', last_four_digits: '' },
+                    { id: 2, cardholder_name: '', card_number: '', billing_address: '', expiry_date: '', last_four_digits: '' },
+                    { id: 3, cardholder_name: '', card_number: '', billing_address: '', expiry_date: '', last_four_digits: '' },]
                     const response2 = await fetch('http://127.0.0.1:8000/v1/payment-cards', {
                         method: 'GET',
                         headers: {
@@ -57,11 +59,12 @@ function ProfilePage() {
     
                 if (!response2.ok) throw new Error('Failed to fetch profile data');
                 const data2 = await response2.json();
-                console.log(data2)
+                console.log("hef", data2)
                 let i = 0
                 for (const pc of data2) {
                     placeholderCards[i] = pc
                     placeholderCards[i].card_number = ''
+                    placeholderCards[i].last_four_digits = pc.last_four_digits;
                     i++;
                 }
                 setPaymentCards(placeholderCards);
@@ -93,6 +96,7 @@ function ProfilePage() {
             current_password: currentPassword,
             new_password: newPassword,
             subscribed_to_promotions: isSubscribed,
+            last_four_digits: last_four_digits,
         };
 
         try {
@@ -162,7 +166,16 @@ function ProfilePage() {
 
     const handleCardChange = (id, field, value) => {
         setPaymentCards((prevCards) =>
-            prevCards.map((card) => (card.id === id ? { ...card, [field]: value } : card))
+            prevCards.map((card) => {
+                if (card.id === id) {
+                    const updatedCard = { ...card, [field]: value };
+                    if (field === 'card_number') {
+                        updatedCard.last_four_digits = value.slice(-4);
+                    }
+                    return updatedCard;
+                }
+                return card;
+            })
         );
     };
 
@@ -202,12 +215,13 @@ function ProfilePage() {
                     </div>
                     {paymentCards
                         .filter((card) => card.cardholder_name)
-                        .map((card) => (
+                        .map((card, index) => (
                             <div key={card.id} className="mb-4">
-                                <p className="text-lg font-medium">Payment Card {card.id}:</p>
+                                <p className="text-lg font-medium">Payment Card {index + 1}:</p>
                                 <p className="text-lg">Cardholder: {card.cardholder_name}</p>
                                 <p className="text-lg">Billing Address: {card.billing_address}</p>
                                 <p className="text-lg">Expiry Date: {card.expiry_date}</p>
+                                <p className="text-lg">Last Four Digits: {card.last_four_digits}</p>
                             </div>
                         ))}
                     <div className="flex justify-between">
@@ -266,9 +280,9 @@ function ProfilePage() {
                             className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-200"
                         />
                     </div>
-                    {paymentCards.map((card) => (
+                    {paymentCards.map((card, index) => (
                         <div key={card.id} className="mb-4">
-                            <h2 className="text-lg font-medium">Payment Card {card.id}</h2>
+                            <h2 className="text-lg font-medium">Payment Card {index + 1}</h2>
                             <input
                                 type="text"
                                 placeholder="Cardholder Name"
@@ -278,7 +292,7 @@ function ProfilePage() {
                             />
                             <input
                                 type="text"
-                                placeholder="Card Number"
+                                placeholder={paymentCards[index].last_four_digits ? `**** **** **** ${paymentCards[index].last_four_digits}` : "Card Number"}
                                 value={card.card_number}
                                 onChange={(e) => handleCardChange(card.id, 'card_number', e.target.value)}
                                 className="w-full px-4 py-2 mb-2 border border-gray-300 rounded-lg"
@@ -348,7 +362,5 @@ function ProfilePage() {
         </div>
     );
 }
-
-
 
 export default withAuth(ProfilePage);

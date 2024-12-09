@@ -94,30 +94,34 @@ export default function MovieInfo() {
         }
     };
 
-    // Check if the time is available for the selected date
-    const isTimeAvailable = (time) => {
-        if (!selectedDate) {
-            return false; // Don't allow time selection if no date is selected
-        }
-
-        return showtimes.some(showtime => {
-            const showtimeDate = format(new Date(showtime.time), 'EEE MMM d');
-            const showtimeTime = new Date(showtime.time).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true, timeZone: 'UTC' });
-
-            const selectedDateTimeUTC = new Date(`${selectedDate} ${time} UTC`);
-            const selectedTimeFormatted = selectedDateTimeUTC.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true, timeZone: 'UTC' });
-
-            return showtimeDate === selectedDate && showtimeTime === selectedTimeFormatted && showtime.showroom;
-        });
-    };
-
     // Check if the date has showtimes available
-    const isDateAvailable = (date) => {
-        return showtimes.some(showtime => {
-            const showtimeDate = format(new Date(showtime.time), 'EEE MMM d');
-            return showtimeDate === date && showtime.showroom; // Check if showroom exists
-        });
-    };
+const isDateAvailable = (date) => {
+    if (!showtimes || showtimes.length === 0) {
+        return false; // Return false if showtimes is empty
+    }
+    return showtimes.some(showtime => {
+        const showtimeDate = format(new Date(showtime.time), 'EEE MMM d');
+        return showtimeDate === date && showtime.showroom; // Check if showroom exists
+    });
+};
+
+// Check if the time is available for the selected date
+const isTimeAvailable = (time) => {
+    if (!selectedDate || !showtimes || showtimes.length === 0) {
+        return false; // Don't allow time selection if no date is selected or showtimes is empty
+    }
+
+    return showtimes.some(showtime => {
+        const showtimeDate = format(new Date(showtime.time), 'EEE MMM d');
+        const showtimeTime = new Date(showtime.time).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true, timeZone: 'UTC' });
+
+        const selectedDateTimeUTC = new Date(`${selectedDate} ${time} UTC`);
+        const selectedTimeFormatted = selectedDateTimeUTC.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true, timeZone: 'UTC' });
+
+        return showtimeDate === selectedDate && showtimeTime === selectedTimeFormatted && showtime.showroom;
+    });
+};
+
 
     return (
         <div className="p-4">
