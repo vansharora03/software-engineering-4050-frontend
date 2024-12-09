@@ -13,6 +13,7 @@ export default function SelectSeats() {
     const selectedDate = searchParams.get('date');
     const selectedTime = searchParams.get('time');
     const [movie, setMovie] = useState({})
+    
     useEffect(() => {
         const getMovie = async () => {
             const response = await fetch(`http://127.0.0.1:8000/v1/movies/${id}`)
@@ -21,11 +22,11 @@ export default function SelectSeats() {
         }
         getMovie()
     })
-
+    
     const initialSeatMap = Array.from({ length: 20 }, (_, i) => ({ id: i + 1, status: 'available' }));
     const { selectedSeats, setSelectedSeats } = useSelectedSeats();
     const [seats, setSeats] = useState(initialSeatMap);
-
+    console.log({initialSeatMap})
     // Effect to clear selected seats when component mounts
     useEffect(() => {
         setSelectedSeats([]);
