@@ -4,6 +4,7 @@ import { movies } from "@/lib/movieData";
 import { useState, useEffect } from 'react';
 import { useSelectedSeats } from '@/context/selectedSeatsContext';
 import { useRouter } from 'next/navigation';
+import { set } from 'date-fns';
 
 export default function SelectSeats() {
     const router = useRouter();
@@ -13,6 +14,7 @@ export default function SelectSeats() {
     const selectedDate = searchParams.get('date');
     const selectedTime = searchParams.get('time');
     const [movie, setMovie] = useState({})
+    
     useEffect(() => {
         const getMovie = async () => {
             const response = await fetch(`http://127.0.0.1:8000/v1/movies/${id}`)
@@ -20,23 +22,34 @@ export default function SelectSeats() {
             setMovie(result.movie)
         }
         getMovie()
-    })
+    }, [])
 
+    
     const initialSeatMap = Array.from({ length: 20 }, (_, i) => ({ id: i + 1, status: 'available' }));
     const { selectedSeats, setSelectedSeats } = useSelectedSeats();
     const [seats, setSeats] = useState(initialSeatMap);
-
-    // Effect to clear selected seats when component mounts
     useEffect(() => {
-        setSelectedSeats([]);
-        setSeats(initialSeatMap); // Reset seat map
-    }, [id, selectedDate, selectedTime]);
+        const seatAvailability = async () => {
+            const tempSeats = seats.map(seat => seat)
+            for (let i = 0; i < tempSeats.length; i++) {
+                const response = await fetch(`http://127.0.0.1:8000/v1/showtimes/${localStorage.getItem("selectedShowtimeId")}/seats/${tempSeats[i].id}`)
+                const result = await response.json()
+                if (!result.available) {
+                    tempSeats[i].status = 'red'
+                }
+            }
+            setSeats(tempSeats)
+            setSelectedSeats([])
+        }
+        seatAvailability()
+    }, [])
 
     // toggle seat if available or taken when it is clicked
     const toggleSeat = (seatId) => {
         setSeats((prevSeats) =>
             prevSeats.map((seat) => {
                 if (seat.id === seatId) {
+                    if (seat.status === 'red') { return seat}
                     const newStatus = seat.status === 'available' ? 'taken' : 'available';
                     if (newStatus === 'taken') {
                         setSelectedSeats((prev) => [...new Set([...prev, seatId])]);
@@ -83,7 +96,7 @@ export default function SelectSeats() {
                         key={seat.id}
                         onClick={() => toggleSeat(seat.id)}
                         className={`w-full h-20 flex items-center justify-center cursor-pointer 
-                        ${seat.status === 'available' ? 'bg-green-500' : 'bg-gray-500'}`}
+                        ${seat.status === 'available' ? 'bg-green-500' : seat.status === 'red' ? 'bg-red-500':'bg-gray-500'}`}
                     >
                         {seat.id}
                     </div>
