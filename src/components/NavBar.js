@@ -4,86 +4,104 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
 export default function NavBar() {
-    const router = useRouter();
-    const [searchInput, setSearchInput] = useState("");
-    const [displayedMovies, setDisplayedMovies] = useState([]);
-    const [movies, setMovies] = useState([]);
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
-    const [isAdmin, setIsAdmin] = useState(false)
+  const router = useRouter();
+  const [searchInput, setSearchInput] = useState("");
+  const [displayedMovies, setDisplayedMovies] = useState([]);
+  const [movies, setMovies] = useState([]);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
 
-    useEffect(() => {
-        const token = localStorage.getItem("token");
-        if (token === "2df46f907c53c66c1220a0da60e64527da9f3519") {
-            setIsAdmin(true)
-        } else {
-            setIsAdmin(false)
-        }
-        // !! converts a value to a boolean so if token exists !!token evaluates to true
-        setIsLoggedIn(!!token);
-    }, [router.pathname]);
-    
-    useEffect(() => {
-        const fetchMovies = async () => {
-            const response = await fetch('http://127.0.0.1:8000/v1/movies');
-            const result = await response.json();
-            setMovies(result.movies);
-        };
-        fetchMovies();
-    }, []);
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token === "2f2250ae1519456de4a6506d1a6172e41313b642") {
+      setIsAdmin(true);
+    } else {
+      setIsAdmin(false);
+    }
+    // !! converts a value to a boolean so if token exists !!token evaluates to true
+    setIsLoggedIn(!!token);
+  }, [router.pathname]);
 
-    useEffect(() => {
-        if (searchInput === "") {
-            setDisplayedMovies([]);
-        } else {
-            setDisplayedMovies(movies.filter(movie => 
-                movie.title.toLowerCase().includes(searchInput.toLowerCase())
-            ));
-        }
-    }, [searchInput, movies]);
-
- 
-
-    const handleSearchClick = () => {
-        const searchField = document.querySelector(".searchField");
-        const dropdown = document.querySelector(".moviesDropdown");
-        searchField.style.display = searchField.style.display === 'none' ? 'block' : 'none';
-        dropdown.style.display = dropdown.style.display === 'none' ? 'block' : 'none';
+  useEffect(() => {
+    const fetchMovies = async () => {
+      const response = await fetch("http://127.0.0.1:8000/v1/movies");
+      const result = await response.json();
+      setMovies(result.movies);
     };
+    fetchMovies();
+  }, []);
 
-    const handleLogout = () => {
-        // take out token from local storage
-        localStorage.removeItem("token");
-        localStorage.setItem("needs_refresh", true);
-        setIsLoggedIn(false);
-        router.push("/");
-    };
+  useEffect(() => {
+    if (searchInput === "") {
+      setDisplayedMovies([]);
+    } else {
+      setDisplayedMovies(
+        movies.filter((movie) =>
+          movie.title.toLowerCase().includes(searchInput.toLowerCase())
+        )
+      );
+    }
+  }, [searchInput, movies]);
 
-    return (
-        <div className="navbar">
-            <div className="buttonRow">
-                <a className="navbutton" href="/">Home</a>
-                {isLoggedIn && <a className="navbutton" href="/bookings">Bookings</a>}
-                <a className="navbutton" onClick={handleSearchClick}>Search</a>
-                {isLoggedIn ? (
-                    <a className="navbutton" href={isAdmin ? '/admin' : '/profile'}>{isAdmin ? 'Admin' : 'Profile'}</a>
-                ) : (
-                    <a className="navbutton" href="/login">Login</a>
-                )}
-                {isLoggedIn && <a className="navbutton" onClick={handleLogout}>Logout</a>}
-            </div>
-            <input 
-                type="text" 
-                className="searchField" 
-                placeholder="Begin typing movie title..." 
-                onChange={e => setSearchInput(e.target.value)}
-            />
-            <div className="moviesDropdown">
-                {displayedMovies.map(m => (
-                    <a key={m.id} href={`/movies/${m.id}`}>
-                        <div className="moviesDropdownItem">{m.title}</div>
-                    </a>
-                ))}
-            </div>
-        </div>
-    );
+  const handleSearchClick = () => {
+    const searchField = document.querySelector(".searchField");
+    const dropdown = document.querySelector(".moviesDropdown");
+    searchField.style.display =
+      searchField.style.display === "none" ? "block" : "none";
+    dropdown.style.display =
+      dropdown.style.display === "none" ? "block" : "none";
+  };
+
+  const handleLogout = () => {
+    // take out token from local storage
+    localStorage.removeItem("token");
+    localStorage.setItem("needs_refresh", true);
+    setIsLoggedIn(false);
+    router.push("/");
+  };
+
+  return (
+    <div className="navbar">
+      <div className="buttonRow">
+        <a className="navbutton" href="/">
+          Home
+        </a>
+        {isLoggedIn && (
+          <a className="navbutton" href="/bookings">
+            Bookings
+          </a>
+        )}
+        <a className="navbutton" onClick={handleSearchClick}>
+          Search
+        </a>
+        {isLoggedIn ? (
+          <a className="navbutton" href={isAdmin ? "/admin" : "/profile"}>
+            {isAdmin ? "Admin" : "Profile"}
+          </a>
+        ) : (
+          <a className="navbutton" href="/login">
+            Login
+          </a>
+        )}
+        {isLoggedIn && (
+          <a className="navbutton" onClick={handleLogout}>
+            Logout
+          </a>
+        )}
+      </div>
+      <input
+        type="text"
+        className="searchField"
+        placeholder="Begin typing movie title..."
+        onChange={(e) => setSearchInput(e.target.value)}
+      />
+      <div className="moviesDropdown">
+        {displayedMovies.map((m) => (
+          <a key={m.id} href={`/movies/${m.id}`}>
+            <div className="moviesDropdownItem">{m.title}</div>
+          </a>
+        ))}
+      </div>
+    </div>
+  );
 }
