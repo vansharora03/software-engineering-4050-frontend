@@ -1,9 +1,9 @@
 "use client";
 import { useState, useEffect } from "react";
-import InputField from "@/components/InputField";
 import { useRouter } from 'next/navigation';
+import InputField from "@/components/InputField";
 
-export default function Register() {
+const Register = () => {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
@@ -13,6 +13,7 @@ export default function Register() {
   const [address, setAddress] = useState('');
   const [subscribedToPromotions, setSubscribedToPromotions] = useState(false);
   const [errors, setErrors] = useState({});
+  const [isEmailAvailable, setIsEmailAvailable] = useState(true);  // New state for email availability
   const router = useRouter();
 
   useEffect(() => {
@@ -32,10 +33,31 @@ export default function Register() {
     confirmPassword: 'Confirm Password',
   };
 
+  // Check email availability
+  const checkEmailAvailability = async () => {
+    if (!email.trim()) return;
+    
+    try {
+      const response = await fetch(`/api/check-username?username=${email}`);
+      const data = await response.json();
+      if (!data.available) {
+        setIsEmailAvailable(false);
+        setErrors(prev => ({ ...prev, email: 'Email is already taken' }));
+      } else {
+        setIsEmailAvailable(true);
+        setErrors(prev => ({ ...prev, email: '' }));
+      }
+    } catch (error) {
+      setErrors(prev => ({ ...prev, email: 'Error checking email availability' }));
+    }
+  };
+
+  // Handle form submission
   const handleSignup = async (e) => {
     e.preventDefault();
     const newErrors = {};
-
+  
+    // Validation for required fields
     if (!firstName) newErrors.firstName = `${fieldLabels.firstName} cannot be empty`;
     if (!lastName) newErrors.lastName = `${fieldLabels.lastName} cannot be empty`;
     if (!email) newErrors.email = `${fieldLabels.email} cannot be empty`;
@@ -43,12 +65,14 @@ export default function Register() {
     if (password !== confirmPassword) {
       newErrors.confirmPassword = 'Passwords do not match';
     }
-
+  
+    // Check if there are validation errors
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       return;
     }
-
+  
+    // Proceed with signup if no validation errors
     const response = await fetch('http://127.0.0.1:8000/register', {
       method: 'POST',
       headers: {
@@ -56,26 +80,27 @@ export default function Register() {
       },
       body: JSON.stringify({
         user: {
-          username: email,
+          username: email,  // The backend expects a 'user' field with 'username' and 'password'
           password,
         },
-        email,
-        subscribed_to_promotions: subscribedToPromotions,
-        first_name: firstName,
-        last_name: lastName,
-        phone_number: phoneNumber,
-        address,
-        account_state: 'inactive'
+        email,  // The backend expects the email as a top-level field
+        first_name: firstName,  // The backend expects the first name as a top-level field
+        last_name: lastName,  // The backend expects the last name as a top-level field
+        phone_number: phoneNumber,  // Optional field
+        address,  // Optional field
+        subscribed_to_promotions: subscribedToPromotions,  // Optional field
+        account_state: 'inactive',  // The backend expects this as a top-level field
       }),
     });
-
+  
     const data = await response.json();
     if (response.ok) {
-      router.push('register/confirm'); // Redirect to the confirmation page
+      router.push('/register/confirm');  // Redirect to the confirmation page
     } else {
       setErrors({ signup: 'Signup failed: ' + JSON.stringify(data) });
     }
   };
+  
 
   return (
     <>
@@ -108,6 +133,7 @@ export default function Register() {
               placeholder="Enter your email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              onBlur={checkEmailAvailability} // Check email availability when user leaves the field
             />
             {errors.email && <p className="text-red-500 text-xs">{errors.email}</p>}
           </div>
@@ -118,7 +144,7 @@ export default function Register() {
               placeholder="Enter your phone number"
               value={phoneNumber}
               onChange={(e) => setPhoneNumber(e.target.value)}
-              optional={true}  // Mark this field as optional
+              optional={true}
             />
             {errors.phoneNumber && <p className="text-red-500 text-xs">{errors.phoneNumber}</p>}
           </div>
@@ -129,7 +155,7 @@ export default function Register() {
               placeholder="Enter your address"
               value={address}
               onChange={(e) => setAddress(e.target.value)}
-              optional={true}  // Mark this field as optional
+              optional={true}
             />
             {errors.address && <p className="text-red-500 text-xs">{errors.address}</p>}
           </div>
@@ -170,6 +196,7 @@ export default function Register() {
           <button
             type="submit"
             className="col-span-2 shadow appearance-none border rounded py-2 px-2 bg-blue-500 text-white text-sm leading-tight focus:outline-none focus:shadow-outline w-full"
+            disabled={!isEmailAvailable}  // Disable button if email is not available
           >
             Sign up
           </button>
@@ -186,4 +213,6 @@ export default function Register() {
       </div>
     </>
   );
-}
+};
+
+export default Register;
