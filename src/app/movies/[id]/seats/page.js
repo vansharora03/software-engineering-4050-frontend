@@ -60,7 +60,7 @@ export default function SelectSeats() {
     };
 
     seatAvailability();
-  }, [seats, setSelectedSeats]);
+  }, []);
 
   // Toggle seat selection
   const toggleSeat = (seatId) => {
