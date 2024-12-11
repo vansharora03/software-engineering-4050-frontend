@@ -34,7 +34,11 @@ const BookingsPage = () => {
           );
           const tickets_result = await response.json();
           const tickets = tickets_result.tickets;
-          tempBookings.push({ id: bookingId, tickets: tickets });
+          let price = 0.00;
+          for (let ticket of tickets) {
+            price += parseFloat(ticket.ticket_type.price);
+          }
+          tempBookings.push({ id: bookingId, tickets: tickets, price: result.bookings[i].promotion? price*(1-result.bookings[i].promotion.discount_percentage/100) : price });
         }
         console.log(tempBookings);
         setBookings(tempBookings);
@@ -64,6 +68,9 @@ const BookingsPage = () => {
             <h2 className="text-lg font-semibold text-gray-300 mb-4">
               Booking ID: {booking.id}
             </h2>
+            <h3 className="text-lg font-semibold text-gray-300 mb-4">
+              Total: ${booking.price.toFixed(2)}
+            </h3>
             <ul className="space-y-4">
               {booking.tickets.map((ticket) => (
                 <li
