@@ -37,6 +37,7 @@ function CheckoutPage() {
   const [isAddingCard, setIsAddingCard] = useState(false); // State to track if adding new card
   const [paymentCardId, setPaymentCardId] = useState(0);
   const [bookingId, setBookingId] = useState(0);
+  const [promotion, setPromotion] = useState("");
   const childPrice = 8.0;
   const adultPrice = 12.0;
   const seniorPrice = 10.0;
@@ -64,6 +65,7 @@ function CheckoutPage() {
         body: JSON.stringify({
           showtime: localStorage.getItem("selectedShowtimeId"),
           card: paymentCardId,
+          promotion: promotion,
         }),
       });
 
@@ -283,7 +285,17 @@ function CheckoutPage() {
             <option value="add_card">Add New Card</option>
           </select>
         </div>
-
+        <div className="mb-4">
+          <label className="block text-lg font-medium mb-2">Promo code:</label>
+          <input
+            type="text"
+            value={promotion}
+            onChange={(e) => setPromotion(e.target.value)}
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+            placeholder="Promo code"
+            required
+          />
+        </div>
         {/* Add Card Form */}
         {isAddingCard && (
           <div className="space-y-4">
