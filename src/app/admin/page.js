@@ -36,10 +36,10 @@ function AdminMainScreen() {
           Manage Promotions
         </button>
         <button
-          onClick={logOut}
-          className="bg-pink-500 text-white p-4 rounded-lg"
+          onClick={() => router.push("/admin/manage-showrooms")}
+          className="bg-yellow-500 text-white p-4 rounded-lg"
         >
-          Log Out
+          Manage Showrooms
         </button>
       </div>
     </div>
