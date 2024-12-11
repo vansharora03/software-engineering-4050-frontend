@@ -37,7 +37,6 @@ function CheckoutPage() {
   const [isAddingCard, setIsAddingCard] = useState(false); // State to track if adding new card
   const [paymentCardId, setPaymentCardId] = useState(0);
   const [bookingId, setBookingId] = useState(0);
-  const [bookingAdded, setBookingAdded] = useState(false);
   const childPrice = 8.0;
   const adultPrice = 12.0;
   const seniorPrice = 10.0;
@@ -50,6 +49,32 @@ function CheckoutPage() {
     };
     getMovie();
   }, [id]);
+
+  useEffect(() => {
+    const createBooking = async () => {
+      const response = await fetch("http://127.0.0.1:8000/v1/bookings", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Token ${localStorage.getItem("token")}`,
+        },
+        body: JSON.stringify({
+          showtime: localStorage.getItem("selectedShowtimeId"),
+          card: paymentCardId,
+        }),
+      });
+
+      const data = await response.json();
+      console.log("Booking Response:", data);
+      if (response.ok) {
+        console.log("Booking ID:", data.booking.id);
+        setBookingId(data.booking.id); // Set the booking ID
+      } else {
+        alert("Failed to create booking. Please try again.");
+      }
+    };
+    createBooking();
+  }, [paymentCardId]);
 
   useEffect(() => {
     const fetchPaymentCards = async () => {
@@ -72,7 +97,6 @@ function CheckoutPage() {
       }
     };
     fetchPaymentCards();
-    setBookingAdded(false);
   }, []);
 
   useEffect(() => {
@@ -85,57 +109,55 @@ function CheckoutPage() {
 
   useEffect(() => {
     const addTickets = async () => {
-      if (bookingAdded) {
-        console.log("bookingId", bookingId);
-        for (let i = 0; i < seats.length; i++) {
-          let ticketTypeId = 1;
-          if (childCount > 0) {
-            setChildCount((prev) => prev - 1);
-          } else if (adultCount > 0) {
-            setAdultCount((prev) => prev - 1);
-            ticketTypeId = 2;
-          } else if (seniorCount > 0) {
-            setSeniorCount((prev) => prev - 1);
-            ticketTypeId = 3;
-          }
-
-          const response = await fetch(`http://127.0.0.1:8000/v1/tickets`, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Token ${localStorage.getItem("token")}`,
-            },
-            body: JSON.stringify({
-              booking: bookingId,
-              seat_number: seats[i],
-              ticket_type: ticketTypeId,
-              showtime: localStorage.getItem("selectedShowtimeId"),
-            }),
-          });
+      console.log("bookingId", bookingId);
+      for (let i = 0; i < seats.length; i++) {
+        let ticketTypeId = 1;
+        if (childCount > 0) {
+          setChildCount((prev) => prev - 1);
+        } else if (adultCount > 0) {
+          setAdultCount((prev) => prev - 1);
+          ticketTypeId = 2;
+        } else if (seniorCount > 0) {
+          setSeniorCount((prev) => prev - 1);
+          ticketTypeId = 3;
         }
-        const emailResponse = await fetch(
-          "http://127.0.0.1:8000/send_order_email",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Token ${localStorage.getItem("token")}`,
-            },
-            body: JSON.stringify({
-              booking_id: bookingId,
-            }),
-          }
-        );
 
-        const emailData = await emailResponse.json();
-        console.log("Email Response:", emailData);
-        if (!emailResponse.ok) {
-          alert("Failed to send order confirmation email. Please try again.");
+        const response = await fetch(`http://127.0.0.1:8000/v1/tickets`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Token ${localStorage.getItem("token")}`,
+          },
+          body: JSON.stringify({
+            booking: bookingId,
+            seat_number: seats[i],
+            ticket_type: ticketTypeId,
+            showtime: localStorage.getItem("selectedShowtimeId"),
+          }),
+        });
+      }
+      const emailResponse = await fetch(
+        "http://127.0.0.1:8000/send_order_email",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Token ${localStorage.getItem("token")}`,
+          },
+          body: JSON.stringify({
+            booking_id: bookingId,
+          }),
         }
+      );
+
+      const emailData = await emailResponse.json();
+      console.log("Email Response:", emailData);
+      if (!emailResponse.ok) {
+        alert("Failed to send order confirmation email. Please try again.");
       }
     };
     addTickets();
-  }, [bookingAdded]);
+  }, [bookingId]);
 
   const handleConfirmCheckout = async (e) => {
     e.preventDefault();
@@ -164,7 +186,6 @@ function CheckoutPage() {
         setPaymentCards([...paymentCards, data]); // Add the new card to the list of cards
         setPaymentCardId(data.id); // Select the newly added card
         setIsAddingCard(false); // Hide the new card form
-        router.push("/confirmation");
       } else {
         alert("Failed to add payment card. Please try again.");
       }
@@ -174,28 +195,6 @@ function CheckoutPage() {
       alert("Please select or add a payment card.");
     }
     console.log("paymentCardId", paymentCardId);
-
-    const response = await fetch("http://127.0.0.1:8000/v1/bookings", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Token ${localStorage.getItem("token")}`,
-      },
-      body: JSON.stringify({
-        showtime: localStorage.getItem("selectedShowtimeId"),
-        card: paymentCardId,
-      }),
-    });
-
-    const data = await response.json();
-    console.log("Booking Response:", data);
-    if (response.ok) {
-      console.log("Booking ID:", data.booking.id);
-      setBookingId(data.booking.id); // Set the booking ID
-      setBookingAdded(true); // Set the booking added flag
-    } else {
-      alert("Failed to create booking. Please try again.");
-    }
 
     router.push("/confirmation");
   };
