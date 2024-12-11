@@ -2,15 +2,17 @@
 import React, { useState, useEffect } from "react";
 import withAuth from "@/components/authGuard";
 import { useRouter } from "next/navigation";
+import { set } from "date-fns";
 
 function ManageMovies() {
   const [movies, setMovies] = useState([]);
   const router = useRouter();
+  const [deleted, setDeleted] = useState(false);
 
   useEffect(() => {
     if (
       localStorage.getItem("token") !==
-      "2f2250ae1519456de4a6506d1a6172e41313b642"
+      "6ce856de415db564327d92568fdfdcf30bdceab1"
     ) {
       router.push("/movies");
     }
@@ -23,7 +25,7 @@ function ManageMovies() {
       setMovies(result.movies);
     };
     fetchMovies();
-  }, []);
+  }, [deleted]);
 
   const handleEditMovie = (id) => {
     // Navigate to movie editing screen
@@ -42,6 +44,7 @@ function ManageMovies() {
           },
         }
       );
+      setDeleted(!deleted);
 
       if (!response.ok) {
         console.error("Failed to delete movie");

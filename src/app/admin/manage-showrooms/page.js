@@ -5,7 +5,7 @@ import withAuth from "@/components/authGuard";
 
 function ManageShowrooms() {
   const [name, setName] = useState("");
-  const [seatCount, setSeatCount] = useState("");
+  const [movieList, setMovieList] = useState([]);
   const [error, setError] = useState(null);
   const router = useRouter();
 

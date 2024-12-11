@@ -8,7 +8,7 @@ function AdminMainScreen() {
   useEffect(() => {
     if (
       localStorage.getItem("token") !==
-      "2f2250ae1519456de4a6506d1a6172e41313b642"
+      "6ce856de415db564327d92568fdfdcf30bdceab1"
     ) {
       router.push("/movies");
     }
@@ -40,6 +40,12 @@ function AdminMainScreen() {
           className="bg-yellow-500 text-white p-4 rounded-lg"
         >
           Manage Showrooms
+        </button>
+        <button
+          onClick={() => router.push("/admin/manage-showtimes")}
+          className="bg-pink-500 text-white p-4 rounded-lg"
+        >
+          Manage Showtimes
         </button>
       </div>
     </div>
