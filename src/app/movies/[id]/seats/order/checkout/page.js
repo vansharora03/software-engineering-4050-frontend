@@ -51,6 +51,9 @@ function CheckoutPage() {
   }, [id]);
 
   useEffect(() => {
+    if (paymentCardId === 0) {
+      return;
+    }
     const createBooking = async () => {
       const response = await fetch("http://127.0.0.1:8000/v1/bookings", {
         method: "POST",
@@ -105,20 +108,26 @@ function CheckoutPage() {
       adultPrice * adultCount +
       seniorPrice * seniorCount;
     setTotalPrice(total);
-  }, [childCount, adultCount, seniorCount]);
+  }, []);
 
   useEffect(() => {
+    if (bookingId === 0) {
+      return;
+    }
     const addTickets = async () => {
       console.log("bookingId", bookingId);
+      let tempChildCount = childCount;
+      let tempAdultCount = adultCount;
+      let tempSeniorCount = seniorCount;
       for (let i = 0; i < seats.length; i++) {
         let ticketTypeId = 1;
-        if (childCount > 0) {
-          setChildCount((prev) => prev - 1);
-        } else if (adultCount > 0) {
-          setAdultCount((prev) => prev - 1);
+        if (tempChildCount > 0) {
+          tempChildCount--;
+        } else if (tempAdultCount > 0) {
+          tempAdultCount--;
           ticketTypeId = 2;
-        } else if (seniorCount > 0) {
-          setSeniorCount((prev) => prev - 1);
+        } else if (tempSeniorCount > 0) {
+          tempSeniorCount--;
           ticketTypeId = 3;
         }
 
