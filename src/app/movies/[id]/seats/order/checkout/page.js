@@ -75,6 +75,7 @@ function CheckoutPage() {
         console.log("Booking ID:", data.booking.id);
         setBookingId(data.booking.id); // Set the booking ID
       } else {
+        window.location.reload();
         alert("Failed to create booking. Please try again.");
       }
     };
@@ -164,7 +165,10 @@ function CheckoutPage() {
       const emailData = await emailResponse.json();
       console.log("Email Response:", emailData);
       if (!emailResponse.ok) {
+        window.location.reload();
         alert("Failed to send order confirmation email. Please try again.");
+      } else {
+        router.push("/confirmation");
       }
     };
     addTickets();
@@ -206,8 +210,6 @@ function CheckoutPage() {
       alert("Please select or add a payment card.");
     }
     console.log("paymentCardId", paymentCardId);
-
-    router.push("/confirmation");
   };
 
   const handleCancelCheckout = () => {

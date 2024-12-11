@@ -15,9 +15,16 @@ function ManagePromotions() {
   useEffect(() => {
     const fetchPromotions = async () => {
       try {
-        const response = await fetch("http://127.0.0.1:8000/v1/promotion");
+        const response = await fetch("http://127.0.0.1:8000/v1/promotions", {
+          headers: {
+            Authorization: `Token ${localStorage.getItem("token")}`,
+            "Content-Type": "application/json",
+          },
+        });
+
         const result = await response.json();
         setPromotions(result.promotions || []);
+        console.log(result);
       } catch (error) {
         console.error("Error fetching promotions:", error);
       }
