@@ -12,7 +12,7 @@ function ManageMovies() {
   useEffect(() => {
     if (
       localStorage.getItem("token") !==
-      "6ce856de415db564327d92568fdfdcf30bdceab1"
+      "2f2250ae1519456de4a6506d1a6172e41313b642"
     ) {
       router.push("/movies");
     }

@@ -37,6 +37,7 @@ function CheckoutPage() {
   const [isAddingCard, setIsAddingCard] = useState(false); // State to track if adding new card
   const [paymentCardId, setPaymentCardId] = useState(0);
   const [bookingId, setBookingId] = useState(0);
+  const [promotion, setPromotion] = useState("");
   const childPrice = 8.0;
   const adultPrice = 12.0;
   const seniorPrice = 10.0;
@@ -64,6 +65,7 @@ function CheckoutPage() {
         body: JSON.stringify({
           showtime: localStorage.getItem("selectedShowtimeId"),
           card: paymentCardId,
+          promotion: promotion,
         }),
       });
 
@@ -73,6 +75,7 @@ function CheckoutPage() {
         console.log("Booking ID:", data.booking.id);
         setBookingId(data.booking.id); // Set the booking ID
       } else {
+        window.location.reload();
         alert("Failed to create booking. Please try again.");
       }
     };
@@ -162,7 +165,10 @@ function CheckoutPage() {
       const emailData = await emailResponse.json();
       console.log("Email Response:", emailData);
       if (!emailResponse.ok) {
+        window.location.reload();
         alert("Failed to send order confirmation email. Please try again.");
+      } else {
+        router.push("/confirmation");
       }
     };
     addTickets();
@@ -204,8 +210,6 @@ function CheckoutPage() {
       alert("Please select or add a payment card.");
     }
     console.log("paymentCardId", paymentCardId);
-
-    router.push("/confirmation");
   };
 
   const handleCancelCheckout = () => {
@@ -283,7 +287,17 @@ function CheckoutPage() {
             <option value="add_card">Add New Card</option>
           </select>
         </div>
-
+        <div className="mb-4">
+          <label className="block text-lg font-medium mb-2">Promo code:</label>
+          <input
+            type="text"
+            value={promotion}
+            onChange={(e) => setPromotion(e.target.value)}
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+            placeholder="Promo code"
+            required
+          />
+        </div>
         {/* Add Card Form */}
         {isAddingCard && (
           <div className="space-y-4">

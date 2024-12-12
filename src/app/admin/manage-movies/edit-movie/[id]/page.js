@@ -147,10 +147,9 @@ function EditMovieForm() {
             <input
               type="url"
               name="img_link"
-              value={formData.img_link || ""}
+              value={""}
               onChange={handleChange}
               className="w-full p-2 border rounded"
-              required
             />
           </div>
           <div>
